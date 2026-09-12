@@ -12,6 +12,7 @@ A map quiz. Type country names into the box; each one you get right fills in on 
 - Scroll or pinch to zoom the map, drag to pan, **Reset** to return to the whole world.
 - **Give up** reveals everything you missed in red, on the map and as a list underneath.
 - Hover a filled-in country to see its name.
+- Typing a country you've already named leaves the text in the box, so you can edit it into another name. Enter clears it.
 
 ## What counts as a country
 
@@ -23,7 +24,7 @@ Territories and disputed areas — Greenland, Western Sahara, Kosovo, Northern C
 
 ## Spellings
 
-Around 2,400 spellings are accepted. Accents, punctuation and capitals are ignored, so `cote divoire` works as well as `Côte d'Ivoire`. Common alternatives are in: `USA`, `America`, `UK`, `Britain`, `Holland`, `Burma`, `Zaire`, `DRC`, `Swaziland`, `Czech Republic`, `East Timor`, `Cape Verde`, `Macedonia`, `Persia`, `St Kitts`, `UAE`, `Turkey` for Türkiye, and so on.
+Around 700 spellings are accepted. Two-letter country codes are not — `fr`, `in`, `cn` and the rest were dropped so that half-typed names don't get snatched away mid-word. `UK` and `US` are the two exceptions. Accents, punctuation and capitals are ignored, so `cote divoire` works as well as `Côte d'Ivoire`. Common alternatives are in: `USA`, `America`, `UK`, `Britain`, `Holland`, `Burma`, `Zaire`, `DRC`, `Swaziland`, `Czech Republic`, `East Timor`, `Cape Verde`, `Macedonia`, `Persia`, `St Kitts`, `UAE`, `Turkey` for Türkiye, and so on.
 
 `Congo` alone resolves to the Republic of the Congo; the other one needs `DR Congo`, `DRC`, `Zaire` or `Congo-Kinshasa`. No accepted spelling is ambiguous between two countries — that's checked at build time.
 
