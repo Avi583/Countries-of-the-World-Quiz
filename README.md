@@ -4,30 +4,6 @@ A map quiz. Type country names into the box; each one you get right fills in on 
 
 `index.html` is the whole thing. No build step, no server, no libraries, no data files to fetch — the map geometry and every accepted spelling are inlined in the page. Open it by double-clicking it, or put it online in about two minutes.
 
-## Put it on GitHub Pages
-
-1. On GitHub, click **New repository**. Name it whatever you like (e.g. `name-every-country`), set it to **Public**, and create it.
-2. On the new repo's page, click **uploading an existing file**, drag in `index.html` and `README.md`, and click **Commit changes**.
-3. Go to **Settings → Pages** in that repo.
-4. Under **Build and deployment**, set **Source** to *Deploy from a branch*, then set the branch to **main** and the folder to **/ (root)**. Click **Save**.
-5. Wait a minute, then reload that Settings → Pages screen. Your link appears at the top:
-   `https://YOUR-USERNAME.github.io/name-every-country/`
-
-The file must be named `index.html` and sit at the root of the repo, or Pages will show a 404. Every later push to `main` republishes automatically, usually within a minute.
-
-If you prefer the command line:
-
-```bash
-git init
-git add index.html README.md
-git commit -m "Name every country"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/name-every-country.git
-git push -u origin main
-```
-
-Then do steps 3–5 above.
-
 ## How to play
 
 - Type. Correct answers are accepted the moment you finish typing them — no need to press Enter, though Enter tells you when something isn't recognised.
