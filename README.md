@@ -6,6 +6,7 @@ A map quiz. Type country names into the box; each one you get right fills in on 
 
 ## How to play
 
+- Link Here https://avi583.github.io/Countries-of-the-World-Quiz/
 - Type. Correct answers are accepted the moment you finish typing them — no need to press Enter, though Enter tells you when something isn't recognised.
 - The clock starts on your first keystroke.
 - Scroll or pinch to zoom the map, drag to pan, **Reset** to return to the whole world.
