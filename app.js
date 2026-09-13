@@ -363,7 +363,10 @@ function hit(e){
   return null;
 }
 
+svg.addEventListener("dragstart", function(e){ e.preventDefault(); });
 svg.addEventListener("pointerdown", function(e){
+  if(e.button !== undefined && e.button !== 0 && e.pointerType === "mouse") return;
+  e.preventDefault();
   drag = {x:e.clientX, y:e.clientY, tx:viewport.tx, ty:viewport.ty, r:svg.getBoundingClientRect()};
   moved = false; downAt = Date.now();
   svg.setPointerCapture(e.pointerId); svg.classList.add("dragging");
