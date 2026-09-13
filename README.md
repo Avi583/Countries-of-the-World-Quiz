@@ -1,6 +1,17 @@
 # Build
 
-`data/countries.js` and `data/detail.js` are generated. Do not edit them.
+Nothing here runs when the site is deployed.
+
+The site is plain static files — `index.html`, `style.css`, `app.js`, `lib/`
+and `data/` — served straight off GitHub Pages, and it still opens by
+double-clicking `index.html` off disk. The data files load as ordinary
+`<script>` tags assigning globals rather than `fetch`ing JSON, which is what
+keeps the `file://` case working.
+
+`data/countries.js` and `data/detail.js` are generated, but they are committed
+like any other file. Run the generator only when you change something in
+`build/curated/`, then commit its output. You do not need Node to work on the
+CSS, the markup or the game logic.
 
     npm install
     npm run build      # regenerate the data files
