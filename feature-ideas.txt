@@ -18,7 +18,7 @@ EASY
    game early, since it's currently a single accidental click away.
    Why easy: wrap the existing "giveup" click handler.
 
-3. Persist best time / completion count in localStorage and show it
+3. IMPLEMENTED - Persist best time / completion count in localStorage and show it
    somewhere on the results panel ("Personal best: 04:12").
    Why easy: read/write one localStorage key in finish().
 

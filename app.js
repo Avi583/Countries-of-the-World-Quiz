@@ -134,6 +134,19 @@ function tick(){
 }
 function say(text, kind){ msg.textContent = text; msg.className = "msg" + (kind ? " " + kind : ""); }
 
+/* ---------- personal best (localStorage) ---------- */
+var BEST_KEY = "nec-best-time";
+function getBest(){
+  try {
+    var v = localStorage.getItem(BEST_KEY);
+    return v ? parseInt(v, 10) : null;
+  } catch(e){ return null; }
+}
+function setBest(seconds){
+  try { localStorage.setItem(BEST_KEY, String(seconds)); } catch(e){ /* storage unavailable */ }
+}
+function fmtTime(seconds){ return two(Math.floor(seconds/60)) + ":" + two(seconds%60); }
+
 /* ---------- DOM effects for a single country ---------- */
 function markFound(id){
   var node = lookup.el[id];
@@ -206,6 +219,24 @@ function finish(win, missed){
   document.getElementById("rsub").textContent =
     win ? "Finished in " + clock.textContent + (game.bonus ? ", plus the bonus." : ".")
         : missed.length + " still missing, shown in red on the map.";
+  var rbest = document.getElementById("rbest");
+  if(win){
+    var elapsed = Math.floor((Date.now()-game.t0)/1000);
+    var prevBest = getBest();
+    var isNewBest = prevBest === null || elapsed < prevBest;
+    if(isNewBest) setBest(elapsed);
+    rbest.textContent = "Personal best: " + fmtTime(isNewBest ? elapsed : prevBest) + (isNewBest ? " — new best!" : "");
+    rbest.classList.remove("hidden");
+  } else {
+    var existingBest = getBest();
+    if(existingBest !== null){
+      rbest.textContent = "Personal best: " + fmtTime(existingBest);
+      rbest.classList.remove("hidden");
+    } else {
+      rbest.textContent = "";
+      rbest.classList.add("hidden");
+    }
+  }
   var list = document.getElementById("misslist");
   list.innerHTML = "";
   missed.forEach(function(c){
