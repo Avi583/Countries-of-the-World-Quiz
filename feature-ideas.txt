@@ -18,15 +18,6 @@ EASY
    game early, since it's currently a single accidental click away.
    Why easy: wrap the existing "giveup" click handler.
 
-3. IMPLEMENTED - Persist best time / completion count in localStorage and show it
-   somewhere on the results panel ("Personal best: 04:12").
-   Why easy: read/write one localStorage key in finish().
-
-4. Keyboard shortcut to focus the input from anywhere (e.g. "/"),
-   like a lot of quiz sites do.
-   Why easy: one more document keydown listener, same pattern as
-   the existing Escape handler.
-
 5. "Copy results" button that puts a text summary (time, score,
    missed count) on the clipboard for sharing.
    Why easy: navigator.clipboard.writeText with a string built from
