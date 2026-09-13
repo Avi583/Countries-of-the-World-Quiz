@@ -125,7 +125,7 @@ var game = Game.create(core);
 var ticker = null;
 var input = document.getElementById("guess"), msg = document.getElementById("msg"),
     score = document.getElementById("score"), clock = document.getElementById("clock"),
-    result = document.getElementById("result");
+    result = document.getElementById("result"), best = document.getElementById("best");
 
 function two(n){ return (n<10?"0":"") + n; }
 function tick(){
@@ -146,6 +146,12 @@ function setBest(seconds){
   try { localStorage.setItem(BEST_KEY, String(seconds)); } catch(e){ /* storage unavailable */ }
 }
 function fmtTime(seconds){ return two(Math.floor(seconds/60)) + ":" + two(seconds%60); }
+/* Always reads localStorage fresh, so this stays correct across
+   Start over (which never touches BEST_KEY) and across reloads. */
+function renderBest(){
+  var b = getBest();
+  best.textContent = b !== null ? fmtTime(b) : "—";
+}
 
 /* ---------- DOM effects for a single country ---------- */
 function markFound(id){
@@ -225,6 +231,7 @@ function finish(win, missed){
     var prevBest = getBest();
     var isNewBest = prevBest === null || elapsed < prevBest;
     if(isNewBest) setBest(elapsed);
+    renderBest();
     rbest.textContent = "Personal best: " + fmtTime(isNewBest ? elapsed : prevBest) + (isNewBest ? " — new best!" : "");
     rbest.classList.remove("hidden");
   } else {
@@ -379,7 +386,16 @@ function showCard(c){
   }
 }
 document.getElementById("cardx").addEventListener("click", clearCard);
-document.addEventListener("keydown", function(e){ if(e.key === "Escape") clearCard(); });
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){ clearCard(); return; }
+  /* "/" focuses the guess box from anywhere, unless the user is already
+     typing somewhere (so a literal "/" in a field still works normally). */
+  if(e.key === "/" && document.activeElement !== input &&
+     !e.metaKey && !e.ctrlKey && !e.altKey){
+    e.preventDefault();
+    input.focus();
+  }
+});
 
 /* ---------- pointer: drag, hover, click ---------- */
 var tip = document.getElementById("tip");
@@ -447,6 +463,7 @@ document.getElementById("zreset").addEventListener("click", function(){
 /* ---------- go ---------- */
 score.textContent = "0 / " + core;
 document.querySelector(".blurb").textContent = core + " of them. Type a name and it surfaces out of the water.";
+renderBest();
 paintRegions();
 applyViewport();
 input.focus();
