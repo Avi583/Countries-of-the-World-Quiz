@@ -2,7 +2,7 @@
 "use strict";
 var SVGNS = "http://www.w3.org/2000/svg";
 var DETAIL_AT = 4;      /* map units of on-screen span before a dot becomes a shape */
-var DOT_R = 3.4;
+var DOT_R = 4.5;
 
 Promise.all([
   fetch("countries.json").then(function(r){ return r.json(); }),
@@ -59,12 +59,14 @@ DATA.territories.forEach(function(t, idx){
    state above. */
 var lookup = { el:{}, byAlias:{}, byId:{}, small:[] };
 var core = 0;
+var bigNodes = [], smallNodes = [];
 DATA.countries.forEach(function(c){
   var node;
   if(c.d){
     node = document.createElementNS(SVGNS,"path");
     node.setAttribute("class","c");
     node.setAttribute("d", c.d);
+    bigNodes.push(node);
   } else {
     node = document.createElementNS(SVGNS,"g");
     node.setAttribute("class","sm");
@@ -82,15 +84,24 @@ DATA.countries.forEach(function(c){
     } else {
       lookup.small.push({node:node, dot:dot, span:0});    /* Vatican City stays a dot */
     }
+    smallNodes.push(node);
   }
   node.dataset.name = c.n;
   node.dataset.id = c.i;
-  world.appendChild(node);
   lookup.el[c.i] = node;
   lookup.byId[c.i] = c;
   if(!c.b) core++;
   c.a.forEach(function(a){ lookup.byAlias[a] = c; });
 });
+/* Append every full-outline country first, then every dot-based
+   micro-state on top. Countries.json is in alphabetical order, so
+   without this split a small country whose name sorts before its
+   covering neighbour (e.g. "Andorra" before "France"/"Spain") would
+   have its dot painted first and then buried under that neighbour's
+   110m landmass outline, making it invisible even though its data
+   (and its zoomed-in "hd" shape) is perfectly fine. */
+bigNodes.forEach(function(node){ world.appendChild(node); });
+smallNodes.forEach(function(node){ world.appendChild(node); });
 document.getElementById("mapbox").appendChild(svg);
 
 /* ---------- region tallies ---------- */

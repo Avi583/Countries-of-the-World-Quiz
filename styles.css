@@ -69,6 +69,11 @@ svg.dragging{cursor:grabbing}
   fill:var(--land);stroke:var(--land-line);stroke-width:.5;
   vector-effect:non-scaling-stroke;transition:fill .35s ease,opacity .2s ease;
 }
+/* Micro-state dots (Andorra, Maldives, the Oceania island states, etc.)
+   get a slightly bolder outline than the general land stroke so they
+   stay legible against the ocean at world zoom, where their footprint
+   is only a few pixels across. */
+.sm .dot{stroke-width:1}
 .c.found,.sm.found>*{fill:var(--found);stroke:var(--ocean)}
 .c.missed,.sm.missed>*{fill:var(--miss);stroke:#5E343B}
 .sm>.hd{opacity:0;pointer-events:none}
