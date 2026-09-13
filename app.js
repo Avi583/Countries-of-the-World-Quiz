@@ -80,7 +80,14 @@ DATA.countries.forEach(function(c){
       shape.setAttribute("class","hd");
       shape.setAttribute("d", c.hd);
       node.appendChild(shape);
-      lookup.small.push({node:node, dot:dot, span:c.f[2]});
+      /* Cap the span used for the detail trigger. A few small
+         countries (Maldives, Tonga, Cape Verde, ...) are made up of
+         islands scattered across a wide bounding box, so their raw
+         frame span is large even though no single island is actually
+         big on screen — using it uncapped meant they never showed as
+         a dot at all, even fully zoomed out. Capping keeps the
+         dot->shape swap tied to real on-screen size instead. */
+      lookup.small.push({node:node, dot:dot, span:Math.min(c.f[2], 2)});
     } else {
       lookup.small.push({node:node, dot:dot, span:0});    /* Vatican City stays a dot */
     }
