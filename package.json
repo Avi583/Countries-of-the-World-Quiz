@@ -1,0 +1,14 @@
+{
+  "name": "name-every-country",
+  "private": true,
+  "scripts": {
+    "build": "node build/generate.js",
+    "check": "node build/generate.js --check"
+  },
+  "devDependencies": {
+    "d3-geo": "^3.1.1",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2",
+    "world-countries": "^5.1.0"
+  }
+}

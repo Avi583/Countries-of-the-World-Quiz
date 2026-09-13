@@ -1,0 +1,786 @@
+{
+ "4": {
+  "n": "Afghanistan",
+  "admitted": "1946-11-19"
+ },
+ "8": {
+  "n": "Albania",
+  "admitted": "1955-12-14"
+ },
+ "12": {
+  "n": "Algeria",
+  "admitted": "1962-10-08"
+ },
+ "20": {
+  "n": "Andorra",
+  "admitted": "1993-07-28"
+ },
+ "24": {
+  "n": "Angola",
+  "admitted": "1976-12-01"
+ },
+ "28": {
+  "n": "Antigua and Barbuda",
+  "admitted": "1981-11-11"
+ },
+ "31": {
+  "n": "Azerbaijan",
+  "admitted": "1992-03-02"
+ },
+ "32": {
+  "n": "Argentina",
+  "admitted": "1945-10-24"
+ },
+ "36": {
+  "n": "Australia",
+  "admitted": "1945-11-01"
+ },
+ "40": {
+  "n": "Austria",
+  "admitted": "1955-12-14"
+ },
+ "44": {
+  "n": "Bahamas",
+  "admitted": "1973-09-18"
+ },
+ "48": {
+  "n": "Bahrain",
+  "admitted": "1971-09-21"
+ },
+ "50": {
+  "n": "Bangladesh",
+  "admitted": "1974-09-17"
+ },
+ "51": {
+  "n": "Armenia",
+  "admitted": "1992-03-02"
+ },
+ "52": {
+  "n": "Barbados",
+  "admitted": "1966-12-09"
+ },
+ "56": {
+  "n": "Belgium",
+  "admitted": "1945-12-27"
+ },
+ "64": {
+  "n": "Bhutan",
+  "admitted": "1971-09-21"
+ },
+ "68": {
+  "n": "Bolivia",
+  "admitted": "1945-11-14"
+ },
+ "70": {
+  "n": "Bosnia and Herzegovina",
+  "admitted": "1992-05-22"
+ },
+ "72": {
+  "n": "Botswana",
+  "admitted": "1966-10-17"
+ },
+ "76": {
+  "n": "Brazil",
+  "admitted": "1945-10-24"
+ },
+ "84": {
+  "n": "Belize",
+  "admitted": "1981-09-25"
+ },
+ "90": {
+  "n": "Solomon Islands",
+  "admitted": "1978-09-19"
+ },
+ "96": {
+  "n": "Brunei",
+  "admitted": "1984-09-21"
+ },
+ "100": {
+  "n": "Bulgaria",
+  "admitted": "1955-12-14"
+ },
+ "104": {
+  "n": "Myanmar",
+  "admitted": "1948-04-19"
+ },
+ "108": {
+  "n": "Burundi",
+  "admitted": "1962-09-18"
+ },
+ "112": {
+  "n": "Belarus",
+  "admitted": "1945-10-24"
+ },
+ "116": {
+  "n": "Cambodia",
+  "admitted": "1955-12-14"
+ },
+ "120": {
+  "n": "Cameroon",
+  "admitted": "1960-09-20"
+ },
+ "124": {
+  "n": "Canada",
+  "admitted": "1945-11-09"
+ },
+ "132": {
+  "n": "Cape Verde",
+  "admitted": "1975-09-16"
+ },
+ "140": {
+  "n": "Central African Republic",
+  "admitted": "1960-09-20"
+ },
+ "144": {
+  "n": "Sri Lanka",
+  "admitted": "1955-12-14"
+ },
+ "148": {
+  "n": "Chad",
+  "admitted": "1960-09-20"
+ },
+ "152": {
+  "n": "Chile",
+  "admitted": "1945-10-24"
+ },
+ "156": {
+  "n": "China",
+  "admitted": "1945-10-24"
+ },
+ "158": {
+  "n": "Taiwan",
+  "note": "Seat held 1945–1971 as the Republic of China"
+ },
+ "170": {
+  "n": "Colombia",
+  "admitted": "1945-11-05"
+ },
+ "174": {
+  "n": "Comoros",
+  "admitted": "1975-11-12"
+ },
+ "178": {
+  "n": "Republic of the Congo",
+  "admitted": "1960-09-20"
+ },
+ "180": {
+  "n": "DR Congo",
+  "admitted": "1960-09-20"
+ },
+ "188": {
+  "n": "Costa Rica",
+  "admitted": "1945-11-02"
+ },
+ "191": {
+  "n": "Croatia",
+  "admitted": "1992-05-22"
+ },
+ "192": {
+  "n": "Cuba",
+  "admitted": "1945-10-24"
+ },
+ "196": {
+  "n": "Cyprus",
+  "admitted": "1960-09-20"
+ },
+ "203": {
+  "n": "Czechia",
+  "admitted": "1993-01-19"
+ },
+ "204": {
+  "n": "Benin",
+  "admitted": "1960-09-20"
+ },
+ "208": {
+  "n": "Denmark",
+  "admitted": "1945-10-24"
+ },
+ "212": {
+  "n": "Dominica",
+  "admitted": "1978-12-18"
+ },
+ "214": {
+  "n": "Dominican Republic",
+  "admitted": "1945-10-24"
+ },
+ "218": {
+  "n": "Ecuador",
+  "admitted": "1945-12-21"
+ },
+ "222": {
+  "n": "El Salvador",
+  "admitted": "1945-10-24"
+ },
+ "226": {
+  "n": "Equatorial Guinea",
+  "admitted": "1968-11-12"
+ },
+ "231": {
+  "n": "Ethiopia",
+  "admitted": "1945-11-13"
+ },
+ "232": {
+  "n": "Eritrea",
+  "admitted": "1993-05-28"
+ },
+ "233": {
+  "n": "Estonia",
+  "admitted": "1991-09-17"
+ },
+ "242": {
+  "n": "Fiji",
+  "admitted": "1970-10-13"
+ },
+ "246": {
+  "n": "Finland",
+  "admitted": "1955-12-14"
+ },
+ "250": {
+  "n": "France",
+  "admitted": "1945-10-24"
+ },
+ "262": {
+  "n": "Djibouti",
+  "admitted": "1977-09-20"
+ },
+ "266": {
+  "n": "Gabon",
+  "admitted": "1960-09-20"
+ },
+ "268": {
+  "n": "Georgia",
+  "admitted": "1992-07-31"
+ },
+ "270": {
+  "n": "Gambia",
+  "admitted": "1965-09-21"
+ },
+ "275": {
+  "n": "Palestine",
+  "note": "Non-member observer state since 29 Nov 2012"
+ },
+ "276": {
+  "n": "Germany",
+  "admitted": "1973-09-18"
+ },
+ "288": {
+  "n": "Ghana",
+  "admitted": "1957-03-08"
+ },
+ "296": {
+  "n": "Kiribati",
+  "admitted": "1999-09-14"
+ },
+ "300": {
+  "n": "Greece",
+  "admitted": "1945-10-25"
+ },
+ "308": {
+  "n": "Grenada",
+  "admitted": "1974-09-17"
+ },
+ "320": {
+  "n": "Guatemala",
+  "admitted": "1945-11-21"
+ },
+ "324": {
+  "n": "Guinea",
+  "admitted": "1958-12-12"
+ },
+ "328": {
+  "n": "Guyana",
+  "admitted": "1966-09-20"
+ },
+ "332": {
+  "n": "Haiti",
+  "admitted": "1945-10-24"
+ },
+ "336": {
+  "n": "Vatican City",
+  "note": "Not a member — permanent observer since 1964"
+ },
+ "340": {
+  "n": "Honduras",
+  "admitted": "1945-12-17"
+ },
+ "348": {
+  "n": "Hungary",
+  "admitted": "1955-12-14"
+ },
+ "352": {
+  "n": "Iceland",
+  "admitted": "1946-11-19"
+ },
+ "356": {
+  "n": "India",
+  "admitted": "1945-10-30"
+ },
+ "360": {
+  "n": "Indonesia",
+  "admitted": "1950-09-28"
+ },
+ "364": {
+  "n": "Iran",
+  "admitted": "1945-10-24"
+ },
+ "368": {
+  "n": "Iraq",
+  "admitted": "1945-12-21"
+ },
+ "372": {
+  "n": "Ireland",
+  "admitted": "1955-12-14"
+ },
+ "376": {
+  "n": "Israel",
+  "admitted": "1949-05-11"
+ },
+ "380": {
+  "n": "Italy",
+  "admitted": "1955-12-14"
+ },
+ "384": {
+  "n": "Ivory Coast",
+  "admitted": "1960-09-20"
+ },
+ "388": {
+  "n": "Jamaica",
+  "admitted": "1962-09-18"
+ },
+ "392": {
+  "n": "Japan",
+  "admitted": "1956-12-18"
+ },
+ "398": {
+  "n": "Kazakhstan",
+  "admitted": "1992-03-02"
+ },
+ "400": {
+  "n": "Jordan",
+  "admitted": "1955-12-14"
+ },
+ "404": {
+  "n": "Kenya",
+  "admitted": "1963-12-16"
+ },
+ "408": {
+  "n": "North Korea",
+  "admitted": "1991-09-17"
+ },
+ "410": {
+  "n": "South Korea",
+  "admitted": "1991-09-17"
+ },
+ "414": {
+  "n": "Kuwait",
+  "admitted": "1963-05-14"
+ },
+ "417": {
+  "n": "Kyrgyzstan",
+  "admitted": "1992-03-02"
+ },
+ "418": {
+  "n": "Laos",
+  "admitted": "1955-12-14"
+ },
+ "422": {
+  "n": "Lebanon",
+  "admitted": "1945-10-24"
+ },
+ "426": {
+  "n": "Lesotho",
+  "admitted": "1966-10-17"
+ },
+ "428": {
+  "n": "Latvia",
+  "admitted": "1991-09-17"
+ },
+ "430": {
+  "n": "Liberia",
+  "admitted": "1945-11-02"
+ },
+ "434": {
+  "n": "Libya",
+  "admitted": "1955-12-14"
+ },
+ "438": {
+  "n": "Liechtenstein",
+  "admitted": "1990-09-18"
+ },
+ "440": {
+  "n": "Lithuania",
+  "admitted": "1991-09-17"
+ },
+ "442": {
+  "n": "Luxembourg",
+  "admitted": "1945-10-24"
+ },
+ "450": {
+  "n": "Madagascar",
+  "admitted": "1960-09-20"
+ },
+ "454": {
+  "n": "Malawi",
+  "admitted": "1964-12-01"
+ },
+ "458": {
+  "n": "Malaysia",
+  "admitted": "1957-09-17"
+ },
+ "462": {
+  "n": "Maldives",
+  "admitted": "1965-09-21"
+ },
+ "466": {
+  "n": "Mali",
+  "admitted": "1960-09-28"
+ },
+ "470": {
+  "n": "Malta",
+  "admitted": "1964-12-01"
+ },
+ "478": {
+  "n": "Mauritania",
+  "admitted": "1961-10-27"
+ },
+ "480": {
+  "n": "Mauritius",
+  "admitted": "1968-04-24"
+ },
+ "484": {
+  "n": "Mexico",
+  "admitted": "1945-11-07"
+ },
+ "492": {
+  "n": "Monaco",
+  "admitted": "1993-05-28"
+ },
+ "496": {
+  "n": "Mongolia",
+  "admitted": "1961-10-27"
+ },
+ "498": {
+  "n": "Moldova",
+  "admitted": "1992-03-02"
+ },
+ "499": {
+  "n": "Montenegro",
+  "admitted": "2006-06-28"
+ },
+ "504": {
+  "n": "Morocco",
+  "admitted": "1956-11-12"
+ },
+ "508": {
+  "n": "Mozambique",
+  "admitted": "1975-09-16"
+ },
+ "512": {
+  "n": "Oman",
+  "admitted": "1971-10-07"
+ },
+ "516": {
+  "n": "Namibia",
+  "admitted": "1990-04-23"
+ },
+ "520": {
+  "n": "Nauru",
+  "admitted": "1999-09-14"
+ },
+ "524": {
+  "n": "Nepal",
+  "admitted": "1955-12-14"
+ },
+ "528": {
+  "n": "Netherlands",
+  "admitted": "1945-12-10"
+ },
+ "548": {
+  "n": "Vanuatu",
+  "admitted": "1981-09-15"
+ },
+ "554": {
+  "n": "New Zealand",
+  "admitted": "1945-10-24"
+ },
+ "558": {
+  "n": "Nicaragua",
+  "admitted": "1945-10-24"
+ },
+ "562": {
+  "n": "Niger",
+  "admitted": "1960-09-20"
+ },
+ "566": {
+  "n": "Nigeria",
+  "admitted": "1960-10-07"
+ },
+ "578": {
+  "n": "Norway",
+  "admitted": "1945-11-27"
+ },
+ "583": {
+  "n": "Micronesia",
+  "admitted": "1991-09-17"
+ },
+ "584": {
+  "n": "Marshall Islands",
+  "admitted": "1991-09-17"
+ },
+ "585": {
+  "n": "Palau",
+  "admitted": "1994-12-15"
+ },
+ "586": {
+  "n": "Pakistan",
+  "admitted": "1947-09-30"
+ },
+ "591": {
+  "n": "Panama",
+  "admitted": "1945-11-13"
+ },
+ "598": {
+  "n": "Papua New Guinea",
+  "admitted": "1975-10-10"
+ },
+ "600": {
+  "n": "Paraguay",
+  "admitted": "1945-10-24"
+ },
+ "604": {
+  "n": "Peru",
+  "admitted": "1945-10-31"
+ },
+ "608": {
+  "n": "Philippines",
+  "admitted": "1945-10-24"
+ },
+ "616": {
+  "n": "Poland",
+  "admitted": "1945-10-24"
+ },
+ "620": {
+  "n": "Portugal",
+  "admitted": "1955-12-14"
+ },
+ "624": {
+  "n": "Guinea-Bissau",
+  "admitted": "1974-09-17"
+ },
+ "626": {
+  "n": "Timor-Leste",
+  "admitted": "2002-09-27"
+ },
+ "634": {
+  "n": "Qatar",
+  "admitted": "1971-09-21"
+ },
+ "642": {
+  "n": "Romania",
+  "admitted": "1955-12-14"
+ },
+ "643": {
+  "n": "Russia",
+  "admitted": "1945-10-24"
+ },
+ "646": {
+  "n": "Rwanda",
+  "admitted": "1962-09-18"
+ },
+ "659": {
+  "n": "Saint Kitts and Nevis",
+  "admitted": "1983-09-23"
+ },
+ "662": {
+  "n": "Saint Lucia",
+  "admitted": "1979-09-18"
+ },
+ "670": {
+  "n": "Saint Vincent and the Grenadines",
+  "admitted": "1980-09-16"
+ },
+ "674": {
+  "n": "San Marino",
+  "admitted": "1992-03-02"
+ },
+ "678": {
+  "n": "São Tomé and Príncipe",
+  "admitted": "1975-09-16"
+ },
+ "682": {
+  "n": "Saudi Arabia",
+  "admitted": "1945-10-24"
+ },
+ "686": {
+  "n": "Senegal",
+  "admitted": "1960-09-28"
+ },
+ "688": {
+  "n": "Serbia",
+  "admitted": "2000-11-01"
+ },
+ "690": {
+  "n": "Seychelles",
+  "admitted": "1976-09-21"
+ },
+ "694": {
+  "n": "Sierra Leone",
+  "admitted": "1961-09-27"
+ },
+ "702": {
+  "n": "Singapore",
+  "admitted": "1965-09-21"
+ },
+ "703": {
+  "n": "Slovakia",
+  "admitted": "1993-01-19"
+ },
+ "704": {
+  "n": "Vietnam",
+  "admitted": "1977-09-20"
+ },
+ "705": {
+  "n": "Slovenia",
+  "admitted": "1992-05-22"
+ },
+ "706": {
+  "n": "Somalia",
+  "admitted": "1960-09-20"
+ },
+ "710": {
+  "n": "South Africa",
+  "admitted": "1945-11-07"
+ },
+ "716": {
+  "n": "Zimbabwe",
+  "admitted": "1980-08-25"
+ },
+ "724": {
+  "n": "Spain",
+  "admitted": "1955-12-14"
+ },
+ "728": {
+  "n": "South Sudan",
+  "admitted": "2011-07-14"
+ },
+ "729": {
+  "n": "Sudan",
+  "admitted": "1956-11-12"
+ },
+ "740": {
+  "n": "Suriname",
+  "admitted": "1975-12-04"
+ },
+ "748": {
+  "n": "Eswatini",
+  "admitted": "1968-09-24"
+ },
+ "752": {
+  "n": "Sweden",
+  "admitted": "1946-11-19"
+ },
+ "756": {
+  "n": "Switzerland",
+  "admitted": "2002-09-10"
+ },
+ "760": {
+  "n": "Syria",
+  "admitted": "1945-10-24"
+ },
+ "762": {
+  "n": "Tajikistan",
+  "admitted": "1992-03-02"
+ },
+ "764": {
+  "n": "Thailand",
+  "admitted": "1946-12-16"
+ },
+ "768": {
+  "n": "Togo",
+  "admitted": "1960-09-20"
+ },
+ "776": {
+  "n": "Tonga",
+  "admitted": "1999-09-14"
+ },
+ "780": {
+  "n": "Trinidad and Tobago",
+  "admitted": "1962-09-18"
+ },
+ "784": {
+  "n": "United Arab Emirates",
+  "admitted": "1971-12-09"
+ },
+ "788": {
+  "n": "Tunisia",
+  "admitted": "1956-11-12"
+ },
+ "792": {
+  "n": "Türkiye",
+  "admitted": "1945-10-24"
+ },
+ "795": {
+  "n": "Turkmenistan",
+  "admitted": "1992-03-02"
+ },
+ "798": {
+  "n": "Tuvalu",
+  "admitted": "2000-09-05"
+ },
+ "800": {
+  "n": "Uganda",
+  "admitted": "1962-10-25"
+ },
+ "804": {
+  "n": "Ukraine",
+  "admitted": "1945-10-24"
+ },
+ "807": {
+  "n": "North Macedonia",
+  "admitted": "1993-04-08"
+ },
+ "818": {
+  "n": "Egypt",
+  "admitted": "1945-10-24"
+ },
+ "826": {
+  "n": "United Kingdom",
+  "admitted": "1945-10-24"
+ },
+ "834": {
+  "n": "Tanzania",
+  "admitted": "1961-12-14"
+ },
+ "840": {
+  "n": "United States",
+  "admitted": "1945-10-24"
+ },
+ "854": {
+  "n": "Burkina Faso",
+  "admitted": "1960-09-20"
+ },
+ "858": {
+  "n": "Uruguay",
+  "admitted": "1945-12-18"
+ },
+ "860": {
+  "n": "Uzbekistan",
+  "admitted": "1992-03-02"
+ },
+ "862": {
+  "n": "Venezuela",
+  "admitted": "1945-11-15"
+ },
+ "882": {
+  "n": "Samoa",
+  "admitted": "1976-12-15"
+ },
+ "887": {
+  "n": "Yemen",
+  "admitted": "1947-09-30"
+ },
+ "894": {
+  "n": "Zambia",
+  "admitted": "1964-12-01"
+ }
+}

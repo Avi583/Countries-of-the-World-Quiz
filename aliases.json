@@ -1,0 +1,243 @@
+{
+ "28": {
+  "n": "Antigua and Barbuda",
+  "add": [
+   "antigua",
+   "barbuda"
+  ]
+ },
+ "70": {
+  "n": "Bosnia and Herzegovina",
+  "add": [
+   "bosnia",
+   "herzegovina",
+   "bih"
+  ]
+ },
+ "90": {
+  "n": "Solomon Islands",
+  "add": [
+   "solomons"
+  ]
+ },
+ "132": {
+  "n": "Cape Verde",
+  "add": [
+   "cabo verde"
+  ]
+ },
+ "140": {
+  "n": "Central African Republic",
+  "add": [
+   "car",
+   "centrafrique"
+  ]
+ },
+ "156": {
+  "n": "China",
+  "add": [
+   "prc",
+   "peoples republic of china"
+  ]
+ },
+ "158": {
+  "n": "Taiwan",
+  "add": [
+   "formosa"
+  ]
+ },
+ "178": {
+  "n": "Republic of the Congo",
+  "add": [
+   "republic of congo",
+   "west congo"
+  ]
+ },
+ "180": {
+  "n": "DR Congo",
+  "add": [
+   "zaire",
+   "east congo"
+  ]
+ },
+ "203": {
+  "n": "Czechia",
+  "add": [
+   "czech"
+  ]
+ },
+ "214": {
+  "n": "Dominican Republic",
+  "add": [
+   "dominican rep"
+  ]
+ },
+ "226": {
+  "n": "Equatorial Guinea",
+  "add": [
+   "eq guinea"
+  ]
+ },
+ "275": {
+  "n": "Palestine",
+  "add": [
+   "palestinian territories"
+  ]
+ },
+ "276": {
+  "n": "Germany",
+  "add": [
+   "deutschland"
+  ]
+ },
+ "300": {
+  "n": "Greece",
+  "add": [
+   "hellas"
+  ]
+ },
+ "336": {
+  "n": "Vatican City",
+  "add": [
+   "holy see"
+  ]
+ },
+ "364": {
+  "n": "Iran",
+  "add": [
+   "persia"
+  ]
+ },
+ "384": {
+  "n": "Ivory Coast",
+  "add": [
+   "cote divoire",
+   "ivorycoast"
+  ]
+ },
+ "408": {
+  "n": "North Korea",
+  "add": [
+   "korea north",
+   "n korea"
+  ]
+ },
+ "410": {
+  "n": "South Korea",
+  "add": [
+   "korea south",
+   "rok",
+   "s korea"
+  ]
+ },
+ "418": {
+  "n": "Laos",
+  "add": [
+   "lao pdr"
+  ]
+ },
+ "583": {
+  "n": "Micronesia",
+  "add": [
+   "fsm"
+  ]
+ },
+ "584": {
+  "n": "Marshall Islands",
+  "add": [
+   "marshalls"
+  ]
+ },
+ "598": {
+  "n": "Papua New Guinea",
+  "add": [
+   "png"
+  ]
+ },
+ "643": {
+  "n": "Russia",
+  "add": [
+   "ussr"
+  ]
+ },
+ "659": {
+  "n": "Saint Kitts and Nevis",
+  "add": [
+   "saint kitts",
+   "nevis"
+  ]
+ },
+ "670": {
+  "n": "Saint Vincent and the Grenadines",
+  "add": [
+   "saint vincent",
+   "grenadines"
+  ]
+ },
+ "678": {
+  "n": "São Tomé and Príncipe",
+  "add": [
+   "sao tome"
+  ]
+ },
+ "724": {
+  "n": "Spain",
+  "add": [
+   "espana"
+  ]
+ },
+ "729": {
+  "n": "Sudan",
+  "add": [
+   "north sudan"
+  ]
+ },
+ "752": {
+  "n": "Sweden",
+  "add": [
+   "sverige"
+  ]
+ },
+ "756": {
+  "n": "Switzerland",
+  "add": [
+   "swiss",
+   "helvetia"
+  ]
+ },
+ "780": {
+  "n": "Trinidad and Tobago",
+  "add": [
+   "trinidad",
+   "tobago"
+  ]
+ },
+ "784": {
+  "n": "United Arab Emirates",
+  "add": [
+   "u a e"
+  ]
+ },
+ "826": {
+  "n": "United Kingdom",
+  "add": [
+   "u k",
+   "britain"
+  ]
+ },
+ "840": {
+  "n": "United States",
+  "add": [
+   "u s",
+   "u s a",
+   "america",
+   "states"
+  ]
+ },
+ "792": {
+  "n": "Türkiye",
+  "add": [
+   "turkey"
+  ]
+ }
+}
