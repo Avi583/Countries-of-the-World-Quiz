@@ -1,0 +1,92 @@
+Name every country — file directory
+====================================
+
+index.html
+  Page skeleton: masthead, control bar (guess input, score/clock,
+  Give up / Start over buttons), the map container (#mapbox, with the
+  fact-card and zoom controls), the region-progress grid, the results
+  panel, and the footer/credits. Loads styles.css, then game.js,
+  viewport.js and app.js in that order. Holds no game data itself —
+  app.js fetches countries.json and territories.json at runtime.
+
+styles.css
+  All visual styling: colour variables, layout for the masthead and
+  control bar, map/SVG styling (including the found/missed/pulse
+  states and the small-country dot-to-shape transition), the fact
+  card, zoom buttons, region progress bars, and the results list.
+  Unchanged from the original.
+
+game.js
+  Pure game-state logic, no DOM access. Exposes:
+    norm(s)   — lowercases/strips accents & punctuation the same way
+                the accepted spellings were normalised at build time.
+    Game      — an object of pure functions (create, reset, start,
+                guess, giveUp) that take a plain state object and
+                return a description of what happened. Nothing here
+                reads or writes the page; app.js renders the result.
+  Loaded before viewport.js and app.js, since app.js calls into it.
+
+viewport.js
+  Pure pan/zoom math, no DOM access. Exposes:
+    MAXK              — the deepest zoom level (96x), used both here
+                         and by app.js's zoomAt().
+    createViewport, clampViewport, zoomViewportAt, frameForCountry
+                      — plain-number viewport state and the math to
+                         zoom around a point or frame a country's
+                         [x, y, span] entry. app.js's applyViewport()
+                         is what turns these numbers into the on-screen
+                         SVG transform.
+  Loaded before app.js, since app.js calls into it.
+
+app.js
+  Everything that touches the DOM. On load it fetches countries.json
+  and territories.json, merges them into one DATA object (plus the
+  viewBox), and then: draws the SVG map (countries, territories, the
+  small-country dots that swap to real coastlines on zoom), builds the
+  region-progress tallies, wires up the guess input to Game.guess(),
+  drives the clock, renders the fact card on click, handles drag/zoom/
+  pan and the glide-to-country animation, and renders the give-up /
+  restart / results flow. This is a like-for-like split of the
+  original script.js's DOM section — logic is unchanged, only the
+  data now arrives via fetch() instead of being read out of an inline
+  <script type="application/json"> tag.
+
+countries.json
+  { "viewBox": "0 0 1000 500", "countries": [ ... ] }
+  One entry per playable answer — 195 sovereign states plus Taiwan
+  (flagged "b": true as the bonus, non-scoring 196th). Each entry
+  carries:
+    i    ISO numeric code
+    n    display name
+    r    region, for the tallies
+    a    accepted spellings
+    d    outline at 110m, for countries big enough to draw
+    p    dot coordinates, for the 29 small ones
+    hd   outline at 10m, shown when you zoom in
+    f    [x, y, span] — where to centre and how far to zoom when clicked
+    pop, py   population and the year it estimates
+    u    UN admission date, ISO format
+    un   note used instead of a date for the three non-members
+    b    bonus flag (Taiwan only)
+  To add a spelling, find the country here and add your string to its
+  "a" array, lowercase and without punctuation (see README.md).
+
+territories.json
+  { "territories": [ ... ] }
+  The 10 non-answerable areas drawn in a darker tone: Greenland,
+  Western Sahara, Kosovo, Northern Cyprus, Somaliland, Puerto Rico,
+  New Caledonia, the Falklands, the French Southern Territories and
+  Antarctica. Each entry has "d" (outline) and "n" (display name);
+  entries that belong to a sovereign country also carry "own" (that
+  country's ISO numeric code), so app.js can light the territory up
+  alongside its owner when that country is named.
+
+README.md
+  Project description, how to play, scoring rules, the small-country
+  zoom mechanic, data sources and credits. Unchanged from the original,
+  except that its description of the mapdata JSON block now applies to
+  countries.json and territories.json instead of a block inside
+  index.html.
+
+LICENSE
+  GNU General Public License v3. Unchanged.
