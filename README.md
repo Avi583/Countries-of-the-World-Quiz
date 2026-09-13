@@ -2,8 +2,6 @@
 
 A map quiz. Type country names into the box; each one you get right fills in on the world map and greys out. 195 sovereign states, plus Taiwan as a bonus.
 
-`index.html` is the whole thing. No build step, no server, no libraries, no data files to fetch — the map geometry, every accepted spelling, and the population and UN figures are inlined in the page. Open it by double-clicking it, or put it online in about two minutes.
-
 ## How to play
 
 - Link Here https://avi583.github.io/Countries-of-the-World-Quiz/
