@@ -1,0 +1,110 @@
+Name every country — feature ideas
+===================================
+
+Difficulty is relative to this codebase specifically (small, no build
+step, no framework) — "Easy" means CSS/markup or a few lines in
+existing functions; "Hard" means new data, new rendering logic, or
+state that touches game.js/viewport.js/app.js all at once.
+
+EASY
+----
+
+1. Hard mode toggle: hide the outlines entirely (blank map) until a
+   country is named, or hide the region-progress grid so you can't
+   use tally counts to narrow guesses.
+   Why easy: one new boolean + a CSS class toggle on #mapbox/.regions.
+
+2. Give-up confirmation dialog: a native confirm() before ending the
+   game early, since it's currently a single accidental click away.
+   Why easy: wrap the existing "giveup" click handler.
+
+3. Persist best time / completion count in localStorage and show it
+   somewhere on the results panel ("Personal best: 04:12").
+   Why easy: read/write one localStorage key in finish().
+
+4. Keyboard shortcut to focus the input from anywhere (e.g. "/"),
+   like a lot of quiz sites do.
+   Why easy: one more document keydown listener, same pattern as
+   the existing Escape handler.
+
+5. "Copy results" button that puts a text summary (time, score,
+   missed count) on the clipboard for sharing.
+   Why easy: navigator.clipboard.writeText with a string built from
+   values you already have in finish().
+
+MEDIUM
+------
+
+6. Streak counter: track consecutive correct guesses (broken by a
+   miss/duplicate) and show it in the readout.
+   Why medium: needs a new counter in the Game state object plus a
+   rule for what breaks a streak, then a DOM readout to update.
+
+7. Per-region "reveal" button: give up on just one region instead of
+   the whole map, filling in only that region's misses.
+   Why medium: Game.giveUp currently takes the full country list;
+   you'd add a filtered variant and a button per .reg node.
+
+8. Difficulty-scoped word lists: "capitals mode" or "flags mode" as
+   an alternate guess target using the same map, swapping what
+   norm()/byAlias resolve against.
+   Why medium: game.js's guess() logic stays the same shape, but you
+   need a second alias table and a mode switch that changes which
+   one byAlias points to, plus fact-card copy for the new mode.
+
+9. Undo last guess: pop the most recent entry out of state.found and
+   re-render that one country as unfound.
+   Why medium: Game.guess() doesn't currently record guess order, so
+   you'd add a history array to state and an inverse of markFound()
+   in app.js.
+
+10. Colour-blind / high-contrast theme toggle, saved across sessions.
+    Why medium: not hard technically (swap CSS custom properties at
+    runtime + localStorage), but doing it well means picking a second
+    full palette that still reads clearly for found/missed/selected
+    states.
+
+11. Mobile-friendly autocomplete/typeahead dropdown under the input
+    as you type, so touch users aren't just guessing spellings blind.
+    Why medium: needs a filtered-list UI component and click-to-fill
+    behaviour; the matching logic (norm/byAlias) already exists, this
+    is purely new DOM/UX work.
+
+HARD
+----
+
+12. Timed/attack modes: a countdown timer instead of count-up, or a
+    "sudden death" mode where one miss ends the game.
+    Why hard: touches Game.start/guess/giveUp's assumptions (game
+    currently never "loses," only completes or is abandoned) and the
+    ticker logic in app.js; needs new end conditions threaded through
+    both files consistently.
+
+13. Multiplayer / shared race: two people naming countries against
+    each other in real time.
+    Why hard: needs a backend or at least a relay (WebSocket/Firebase/
+    etc.) — this app is currently 100% static/client-side with no
+    server, so this is a different project shape, not just new code.
+
+14. Continent-select mode: play just Africa, just Europe, etc., with
+    the map cropped/zoomed to that region and scoring scoped to it.
+    Why hard: countries.json has no continent-crop viewBox or
+    initial-frame data per region, so you'd need new data (a bounding
+    box per continent) plus changes to frameForCountry/viewport reset
+    logic and the win condition in Game.guess (currently "===
+    state.core", a single global number).
+
+15. Editable/import custom country lists (e.g. "US states" or
+    "world capitals") as a totally different quiz built on the same
+    engine.
+    Why hard: game.js and viewport.js are already fairly generic, but
+    app.js has country-specific assumptions baked in (territories,
+    the small-country dot/shape swap, population/UN fact-card fields)
+    that would need to become optional/pluggable rather than assumed.
+
+16. Accessibility pass for full keyboard-only map navigation (tab
+    between countries, arrow keys to move focus, Enter to select).
+    Why hard: SVG elements aren't natively tab-focusable/orderable in
+    a meaningful spatial sense; you'd need tabindex management, a
+    custom focus ring, and a coherent traversal order (probably by
+    region or geography) built from scratch.
