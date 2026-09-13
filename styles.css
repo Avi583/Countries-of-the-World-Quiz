@@ -62,7 +62,9 @@ button:hover{background:#162C38;border-color:#3A5D6E}
 }
 svg{display:block;width:100%;height:auto;cursor:grab}
 svg.dragging{cursor:grabbing}
-.terr{fill:var(--terr);stroke:var(--terr-line);stroke-width:.4;vector-effect:non-scaling-stroke}
+.terr{fill:var(--terr);stroke:var(--terr-line);stroke-width:.4;vector-effect:non-scaling-stroke;transition:fill .35s ease}
+.terr.found{fill:var(--found);stroke:var(--ocean)}
+.terr.pulse{animation:pulse .7s ease-out}
 .c,.sm>*{
   fill:var(--land);stroke:var(--land-line);stroke-width:.5;
   vector-effect:non-scaling-stroke;transition:fill .35s ease,opacity .2s ease;

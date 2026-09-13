@@ -117,12 +117,25 @@ svg.setAttribute("aria-label","World map. Countries you have named are filled in
 var world = document.createElementNS(SVGNS,"g");
 svg.appendChild(world);
 
-if(DATA.territories.length){
-  var t = document.createElementNS(SVGNS,"path");
-  t.setAttribute("class","terr");
-  t.setAttribute("d", DATA.territories.join(" "));
-  world.appendChild(t);
-}
+var OWNER_ABBR = {"840":"U.S.", "826":"U.K."};
+var countryNameById = {};
+DATA.countries.forEach(function(c){ countryNameById[c.i] = c.n; });
+/* Maps a sovereign's country id to the list of its territory nodes,
+   so markFound() can light them up alongside the country itself. */
+var territoriesByOwner = {};
+DATA.territories.forEach(function(t, idx){
+  var el = document.createElementNS(SVGNS,"path");
+  el.setAttribute("class","terr");
+  el.setAttribute("d", t.d);
+  if(t.own){
+    var ownerName = OWNER_ABBR[t.own] || countryNameById[t.own];
+    el.dataset.id = "terr" + idx;
+    el.dataset.name = t.n + " (" + ownerName + ")";
+    if(!territoriesByOwner[t.own]) territoriesByOwner[t.own] = [];
+    territoriesByOwner[t.own].push(el);
+  }
+  world.appendChild(el);
+});
 
 /* Static lookup tables built once from `DATA`: which SVG node belongs
    to which country, and how to resolve typed text and ids back to a
@@ -211,6 +224,11 @@ function markFound(id){
   var node = lookup.el[id];
   node.classList.add("found");
   node.classList.remove("pulse"); void node.getBoundingClientRect(); node.classList.add("pulse");
+  var owned = territoriesByOwner[id];
+  if(owned) owned.forEach(function(t){
+    t.classList.add("found");
+    t.classList.remove("pulse"); void t.getBoundingClientRect(); t.classList.add("pulse");
+  });
 }
 function markMissed(id){
   lookup.el[id].classList.add("missed");
@@ -293,6 +311,9 @@ document.getElementById("restart").addEventListener("click", function(){
   clearInterval(ticker); clock.textContent = "00:00";
   score.textContent = "0 / " + core;
   DATA.countries.forEach(function(c){ lookup.el[c.i].classList.remove("found","missed","pulse"); });
+  Object.keys(territoriesByOwner).forEach(function(id){
+    territoriesByOwner[id].forEach(function(t){ t.classList.remove("found","pulse"); });
+  });
   order.forEach(function(r){ regions[r].got = 0; });
   paintRegions();
   clearCard();
