@@ -9,6 +9,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@400;500;600&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<meta name="theme-color" content="#0E1C26">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Countries">
 <link rel="apple-touch-icon" sizes="180x180" href="Favicons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="Favicons/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="Favicons/favicon-16x16.png">
@@ -80,5 +85,14 @@
 <script src="game.js"></script>
 <script src="viewport.js"></script>
 <script src="app.js"></script>
+<script>
+if("serviceWorker" in navigator){
+  window.addEventListener("load", function(){
+    navigator.serviceWorker.register("sw.js").catch(function(err){
+      console.error("Service worker registration failed:", err);
+    });
+  });
+}
+</script>
 </body>
 </html>
