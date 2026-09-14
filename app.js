@@ -38,6 +38,9 @@ DATA.countries.forEach(function(c){ countryNameById[c.i] = c.n; });
 /* Maps a sovereign's country id to the list of its territory nodes,
    so markFound() can light them up alongside the country itself. */
 var territoriesByOwner = {};
+/* Every territory node plus its owner id (or null), so continent
+   mode can dim/undim territories along with their owning country. */
+var allTerrEls = [];
 DATA.territories.forEach(function(t, idx){
   var el = document.createElementNS(SVGNS,"path");
   el.setAttribute("class","terr");
@@ -49,6 +52,7 @@ DATA.territories.forEach(function(t, idx){
     if(!territoriesByOwner[t.own]) territoriesByOwner[t.own] = [];
     territoriesByOwner[t.own].push(el);
   }
+  allTerrEls.push({el:el, own:t.own || null});
   world.appendChild(el);
 });
 
@@ -56,9 +60,10 @@ DATA.territories.forEach(function(t, idx){
    to which country, and how to resolve typed text and ids back to a
    country record. These don't change shape during play (only the
    nodes' classes do), so they're kept separate from the game/viewport
-   state above. */
-var lookup = { el:{}, byAlias:{}, byId:{}, small:[] };
-var core = 0;
+   state above. `activeByAlias` is the one exception — continent mode
+   rebuilds it to whichever countries are currently in play. */
+var lookup = { el:{}, byId:{}, small:[], activeByAlias:{} };
+var regionById = {};
 var bigNodes = [], smallNodes = [];
 DATA.countries.forEach(function(c){
   var node;
@@ -97,8 +102,7 @@ DATA.countries.forEach(function(c){
   node.dataset.id = c.i;
   lookup.el[c.i] = node;
   lookup.byId[c.i] = c;
-  if(!c.b) core++;
-  c.a.forEach(function(a){ lookup.byAlias[a] = c; });
+  regionById[c.i] = c.r;
 });
 /* Append every full-outline country first, then every dot-based
    micro-state on top. Countries.json is in alphabetical order, so
@@ -111,7 +115,8 @@ bigNodes.forEach(function(node){ world.appendChild(node); });
 smallNodes.forEach(function(node){ world.appendChild(node); });
 document.getElementById("mapbox").appendChild(svg);
 
-/* ---------- region tallies ---------- */
+/* ---------- region tallies (world-mode grid; totals are always
+   against the full 195, regardless of the active continent) ---------- */
 var regions = {}, order = [];
 DATA.countries.forEach(function(c){
   if(c.b) return;
@@ -139,7 +144,8 @@ function paintRegions(){
    Game state + the timer handle that goes with it. `ticker` is a
    browser interval id, not game data, so it stays outside `game`.
    ================================================================ */
-var game = Game.create(core);
+var core = 0;
+var game;
 var ticker = null;
 var input = document.getElementById("guess"), msg = document.getElementById("msg"),
     score = document.getElementById("score"), clock = document.getElementById("clock"),
@@ -153,18 +159,22 @@ function tick(){
 function say(text, kind){ msg.textContent = text; msg.className = "msg" + (kind ? " " + kind : ""); }
 
 /* ---------- personal best (localStorage) ---------- */
-var BEST_KEY = "nec-best-score";
+/* Keyed per continent, so an Africa-only best doesn't get overwritten
+   by (or compared against) a World-mode run. */
+function bestKey(){
+  return activeRegion === "world" ? "nec-best-score" : "nec-best-score:" + activeRegion;
+}
 function getBest(){
   try {
-    var v = localStorage.getItem(BEST_KEY);
+    var v = localStorage.getItem(bestKey());
     return v ? parseInt(v, 10) : null;
   } catch(e){ return null; }
 }
 function setBest(score){
-  try { localStorage.setItem(BEST_KEY, String(score)); } catch(e){ /* storage unavailable */ }
+  try { localStorage.setItem(bestKey(), String(score)); } catch(e){ /* storage unavailable */ }
 }
 /* Always reads localStorage fresh, so this stays correct across
-   Start over (which never touches BEST_KEY) and across reloads. */
+   Start over (which never touches the key) and across reloads. */
 function renderBest(){
   var b = getBest();
   best.textContent = b !== null ? b + " / " + core : "—";
@@ -203,7 +213,7 @@ function applyGuessResult(guessResult){
 }
 
 function check(commit){
-  var guessResult = Game.guess(game, lookup.byAlias, input.value);
+  var guessResult = Game.guess(game, lookup.activeByAlias, input.value);
   if(guessResult.type === "ignored" || guessResult.type === "unmatched") return false;
   if(guessResult.type === "duplicate"){
     /* leave the text alone so it can be edited into another name; Enter clears it */
@@ -262,23 +272,15 @@ function finish(win, missed){
 }
 
 document.getElementById("giveup").addEventListener("click", function(){
-  var missed = Game.giveUp(game, DATA.countries);
+  var missed = Game.giveUp(game, activeCountries);
   if(missed) finish(false, missed);
 });
 document.getElementById("restart").addEventListener("click", function(){
-  Game.reset(game);
-  clearInterval(ticker); clock.textContent = "00:00";
-  score.textContent = "0 / " + core;
-  DATA.countries.forEach(function(c){ lookup.el[c.i].classList.remove("found","missed","pulse"); });
-  Object.keys(territoriesByOwner).forEach(function(id){
-    territoriesByOwner[id].forEach(function(t){ t.classList.remove("found","pulse"); });
-  });
-  order.forEach(function(r){ regions[r].got = 0; });
-  paintRegions();
-  clearCard();
-  result.classList.add("hidden");
-  input.disabled = false; input.value = ""; input.focus();
-  say("");
+  newGame();
+});
+document.getElementById("continent").addEventListener("change", function(e){
+  applyRegion(e.target.value);
+  newGame();
 });
 
 /* ---------- pan and zoom ---------- */
@@ -460,19 +462,95 @@ svg.addEventListener("pointerup", function(e){
 });
 document.getElementById("zin").addEventListener("click", function(){ zoomAt(viewport.vb[2]/2, viewport.vb[3]/2, 1.5); });
 document.getElementById("zout").addEventListener("click", function(){ zoomAt(viewport.vb[2]/2, viewport.vb[3]/2, 1/1.5); });
-document.getElementById("zreset").addEventListener("click", function(){
+document.getElementById("zreset").addEventListener("click", function(){ resetView(); });
+
+/* ================================================================
+   CONTINENT MODE — scopes scoring, guessing, and the initial/reset
+   view to one region, or to the whole world. game.js and viewport.js
+   are untouched: Game already just takes a count and a filtered
+   country list/alias table, and viewport.js's frameForBounds (added
+   alongside frameForCountry) does the framing math. Everything here
+   just decides *which* countries and *what* box to hand them.
+   ================================================================ */
+var activeRegion = "world", activeCountries = DATA.countries;
+
+function countriesFor(region){
+  return region === "world" ? DATA.countries : DATA.countries.filter(function(c){ return c.r === region; });
+}
+/* A country's own `f` ([x, y, span]) is tuned to frame just that
+   country, but the union of every country's `f` in a region is a
+   good enough bounding box to frame the whole continent — no
+   separate hand-authored per-continent data needed. */
+function regionBounds(countries){
+  var minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
+  countries.forEach(function(c){
+    if(c.b || !c.f) return;
+    var x=c.f[0], y=c.f[1], s=c.f[2];
+    minX = Math.min(minX, x-s); maxX = Math.max(maxX, x+s);
+    minY = Math.min(minY, y-s); maxY = Math.max(maxY, y+s);
+  });
+  return {minX:minX, maxX:maxX, minY:minY, maxY:maxY};
+}
+/* Frames the current activeRegion: the whole world at 1x, or a
+   continent's bounding box with a little padding. Shared by continent
+   switches and the "Reset" button. */
+function resetView(){
   if(anim) cancelAnimationFrame(anim);
-  viewport.k = 1; viewport.tx = 0; viewport.ty = 0;
-  applyViewport();
-});
+  if(activeRegion === "world"){
+    viewport.k = 1; viewport.tx = 0; viewport.ty = 0;
+  } else {
+    var b = regionBounds(activeCountries);
+    var target = frameForBounds(viewport, b.minX, b.maxX, b.minY, b.maxY, 1.15);
+    viewport.k = target.k; viewport.tx = target.tx; viewport.ty = target.ty;
+  }
+  clampViewport(viewport); applyViewport();
+}
+function applyRegion(region){
+  activeRegion = region;
+  activeCountries = countriesFor(region);
+  core = 0;
+  lookup.activeByAlias = {};
+  activeCountries.forEach(function(c){
+    if(!c.b) core++;
+    c.a.forEach(function(a){ lookup.activeByAlias[a] = c; });
+  });
+  DATA.countries.forEach(function(c){
+    var inScope = region === "world" || c.r === region;
+    lookup.el[c.i].classList.toggle("outscope", !inScope);
+  });
+  allTerrEls.forEach(function(t){
+    var inScope = region === "world" || (t.own && regionById[t.own] === region);
+    t.el.classList.toggle("outscope", !inScope);
+  });
+  document.getElementById("regions").classList.toggle("hidden", region !== "world");
+  document.querySelector(".blurb").textContent = region === "world"
+    ? core + " of them. Type a name and it surfaces out of the water."
+    : core + " in " + region + ". Type a name and it surfaces out of the water.";
+  resetView();
+}
+/* Fully resets play for the current continent: a fresh Game (its
+   count may have just changed), cleared map/card/results, timer off. */
+function newGame(){
+  game = Game.create(core);
+  clearInterval(ticker); ticker = null;
+  clock.textContent = "00:00";
+  score.textContent = "0 / " + core;
+  DATA.countries.forEach(function(c){ lookup.el[c.i].classList.remove("found","missed","pulse"); });
+  Object.keys(territoriesByOwner).forEach(function(id){
+    territoriesByOwner[id].forEach(function(t){ t.classList.remove("found","pulse"); });
+  });
+  order.forEach(function(r){ regions[r].got = 0; });
+  paintRegions();
+  clearCard();
+  result.classList.add("hidden");
+  input.disabled = false; input.value = ""; input.focus();
+  say("");
+  renderBest();
+}
 
 /* ---------- go ---------- */
-score.textContent = "0 / " + core;
-document.querySelector(".blurb").textContent = core + " of them. Type a name and it surfaces out of the water.";
-renderBest();
-paintRegions();
-applyViewport();
-input.focus();
+applyRegion("world");
+newGame();
 
 } /* end init */
 })();

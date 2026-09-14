@@ -35,3 +35,17 @@ function frameForCountry(v, f){
   ny = Math.min(0, Math.max(v.vb[3] - v.vb[3]*nk, ny));
   return {k:nk, tx:nx, ty:ny};
 }
+/* Computes the {k,tx,ty} a viewport would need to frame an explicit
+   box (minX/maxX/minY/maxY in map units) rather than one country's
+   `f` entry. Used to zoom to a whole continent: the box is just the
+   union of that continent's countries' own `f` entries, so no
+   separate per-continent data is needed. `pad` (default 1) scales
+   the box outward so edge countries aren't flush against the frame. */
+function frameForBounds(v, minX, maxX, minY, maxY, pad){
+  pad = pad || 1;
+  var cx = (minX+maxX)/2, cy = (minY+maxY)/2;
+  var spanX = (maxX-minX)/2;
+  var spanY = (maxY-minY)/2 * (v.vb[2]/v.vb[3]);
+  var span = Math.max(spanX, spanY) * pad;
+  return frameForCountry(v, [cx, cy, span]);
+}

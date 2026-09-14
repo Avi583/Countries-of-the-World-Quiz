@@ -30,6 +30,12 @@ h1{font-family:var(--cond);font-weight:600;font-size:28px;letter-spacing:.01em;m
   border:1px solid var(--rule);border-radius:3px;padding:11px 13px;
   font-family:var(--cond);font-size:19px;letter-spacing:.01em;
 }
+#continent{
+  flex:0 0 auto;background:var(--ocean-deep);color:var(--ink);
+  border:1px solid var(--rule);border-radius:3px;padding:0 11px;
+  font-family:var(--cond);font-size:16px;letter-spacing:.01em;cursor:pointer;
+}
+#continent:hover{border-color:#3A5D6E}
 #guess::placeholder{color:#5E7784}
 #guess:focus-visible,button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
 #guess.shake{animation:shake .3s}
@@ -62,7 +68,7 @@ button:hover{background:#162C38;border-color:#3A5D6E}
 }
 svg{display:block;width:100%;height:auto;cursor:grab}
 svg.dragging{cursor:grabbing}
-.terr{fill:var(--terr);stroke:var(--terr-line);stroke-width:.4;vector-effect:non-scaling-stroke;transition:fill .35s ease}
+.terr{fill:var(--terr);stroke:var(--terr-line);stroke-width:.4;vector-effect:non-scaling-stroke;transition:fill .35s ease,opacity .25s ease}
 .terr.found{fill:var(--found);stroke:var(--ocean)}
 .terr.pulse{animation:pulse .7s ease-out}
 .c,.sm>*{
@@ -82,6 +88,13 @@ svg.dragging{cursor:grabbing}
 .c.sel,.sm.sel>*{stroke:var(--brass);stroke-width:1.5}
 .c.pulse,.sm.pulse>*{animation:pulse .7s ease-out}
 @keyframes pulse{0%,40%{fill:var(--brass)}100%{fill:var(--found)}}
+
+/* Continent mode: countries/territories outside the chosen region are
+   dimmed and inert (can't be hovered, clicked, or guessed) rather
+   than removed, so switching back to World needs no redraw. */
+.c.outscope,.sm.outscope{pointer-events:none}
+.c.outscope,.sm.outscope>*{opacity:.3}
+.terr.outscope{opacity:.3;pointer-events:none}
 
 /* ---------- fact card ---------- */
 .card{

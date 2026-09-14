@@ -19,6 +19,10 @@ A map quiz. Type country names into the box; each one you get right fills in on 
 
 Territories and disputed areas — Greenland, Western Sahara, Kosovo, Northern Cyprus, Somaliland, Puerto Rico, New Caledonia, the Falklands, the French Southern Territories and Antarctica — are drawn in a darker tone and can't be answered or clicked.
 
+## Continent mode
+
+The dropdown next to the guess box switches from **World** to a single continent — Africa, the Americas, Asia, Europe or Oceania. Picking one rescopes the game to just that region's countries: the score, clock, give-up list and results are all counted against that region's total instead of 195, and only names from that region are accepted (Taiwan still counts as a bonus, but only while Asia or World is selected, since that's its region). The map zooms to frame the region and **Reset** returns to that framing rather than the whole world; everything outside the region is dimmed and can't be clicked, hovered or guessed. Switching continents (or continent back to World) always starts a fresh game. Best scores are tracked separately per continent, so an Oceania run doesn't overwrite your World best.
+
 ## The small countries
 
 29 countries are too small to draw at the map's base resolution. They start as dots at their real coordinates and play exactly like the rest — but zoom in and each one redraws as its actual coastline, taken from Natural Earth's 10m data and projected to land exactly where its dot was.

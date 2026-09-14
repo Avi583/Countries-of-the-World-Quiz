@@ -2,19 +2,21 @@ Name every country — file directory
 ====================================
 
 index.html
-  Page skeleton: masthead, control bar (guess input, score/clock,
-  Give up / Start over buttons), the map container (#mapbox, with the
-  fact-card and zoom controls), the region-progress grid, the results
-  panel, and the footer/credits. Loads styles.css, then game.js,
-  viewport.js and app.js in that order. Holds no game data itself —
-  app.js fetches countries.json and territories.json at runtime.
+  Page skeleton: masthead, control bar (continent select, guess
+  input, score/clock, Give up / Start over buttons), the map
+  container (#mapbox, with the fact-card and zoom controls), the
+  region-progress grid, the results panel, and the footer/credits.
+  Loads styles.css, then game.js, viewport.js and app.js in that
+  order. Holds no game data itself — app.js fetches countries.json
+  and territories.json at runtime.
 
 styles.css
   All visual styling: colour variables, layout for the masthead and
-  control bar, map/SVG styling (including the found/missed/pulse
-  states and the small-country dot-to-shape transition), the fact
-  card, zoom buttons, region progress bars, and the results list.
-  Unchanged from the original.
+  control bar (including the continent select), map/SVG styling
+  (found/missed/pulse states, the small-country dot-to-shape
+  transition, and the dimmed/inert "outscope" state used by continent
+  mode), the fact card, zoom buttons, region progress bars, and the
+  results list.
 
 game.js
   Pure game-state logic, no DOM access. Exposes:
@@ -36,6 +38,12 @@ viewport.js
                          [x, y, span] entry. app.js's applyViewport()
                          is what turns these numbers into the on-screen
                          SVG transform.
+    frameForBounds    — frames an explicit box (minX/maxX/minY/maxY)
+                         instead of one country's entry, by reusing
+                         frameForCountry's math. Used for continent
+                         mode: app.js unions the `f` entries of every
+                         country in a region to get the box, so no
+                         separate per-continent data is needed.
   Loaded before app.js, since app.js calls into it.
 
 app.js
@@ -46,10 +54,15 @@ app.js
   region-progress tallies, wires up the guess input to Game.guess(),
   drives the clock, renders the fact card on click, handles drag/zoom/
   pan and the glide-to-country animation, and renders the give-up /
-  restart / results flow. This is a like-for-like split of the
-  original script.js's DOM section — logic is unchanged, only the
-  data now arrives via fetch() instead of being read out of an inline
-  <script type="application/json"> tag.
+  restart / results flow. It also owns continent mode: applyRegion()
+  filters DATA.countries down to the chosen region, rebuilds the alias
+  table Game.guess() matches against, dims/disables the rest of the
+  map (the "outscope" CSS class), and reframes the viewport via
+  viewport.js's frameForBounds(); newGame() then starts a fresh
+  Game.create() against that region's count. game.js itself needs no
+  changes for this, since it already just takes a count and a
+  filtered country list/alias table rather than assuming the full
+  195.
 
 countries.json
   { "viewBox": "0 0 1000 500", "countries": [ ... ] }
