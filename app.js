@@ -29,11 +29,10 @@ function init(DATA){
    behind the halo-fitting below — now live in geometry.js, loaded
    before this file. haloEllipseEl stays here since it builds a DOM
    node from that math's output. */
-function haloEllipseEl(e){
-  var el = document.createElementNS(SVGNS,"ellipse");
+function haloPolygonEl(points){
+  var el = document.createElementNS(SVGNS,"polygon");
   el.setAttribute("class","halo-detail");
-  el.setAttribute("cx", e.cx); el.setAttribute("cy", e.cy);
-  el.setAttribute("rx", e.rx); el.setAttribute("ry", e.ry);
+  el.setAttribute("points", points.map(function(p){ return p[0]+","+p[1]; }).join(" "));
   return el;
 }
 
@@ -120,7 +119,7 @@ DATA.countries.forEach(function(c){
            that visible instead of swapping to a detail ellipse. */
         node.classList.add("blob");
       } else {
-        var PAD = 0.35;
+        var PAD = 1.0, MIN_RADIUS = 1.0;
         /* Gap between neighbouring islands (sorted by x) large enough
            to mark a break between separate island groups rather than
            just normal coastline vertex spacing (checked across every
@@ -133,23 +132,18 @@ DATA.countries.forEach(function(c){
           if(pts[gi][0] - pts[gi-1][0] > CLUSTER_GAP) clusters.push([]);
           clusters[clusters.length-1].push(pts[gi]);
         }
-        /* Each island group gets its own tight ring instead of one
-           box padded out to cover empty ocean between groups — a
+        /* Each island group gets its own hull-shaped ring instead of
+           one box padded out to cover empty ocean between groups — a
            sprawling country like Kiribati (Gilbert/Phoenix/Line) was
-           otherwise represented by one ellipse so large it swallowed
-           several unrelated neighbouring countries. A cluster whose
-           bounds run up against a map edge is part of a landmass cut
-           by the antimeridian, so it gets an edge-pinned half-ellipse
-           (see fitEdgeEllipse) instead of a centred one. */
+           otherwise represented by one shape so large it swallowed
+           several unrelated neighbouring countries. Points already
+           sit at their real map coordinates, including ones right at
+           the antimeridian edge, so no separate edge case is needed —
+           an inflated hull there just runs up to the map's edge and
+           is clipped by the viewBox like anything else. */
         clusters.forEach(function(cluster){
-          var bb = boundsOf(cluster);
-          if(bb.minX <= 0.5){
-            node.appendChild(haloEllipseEl(fitEdgeEllipse(bb, 0, vbWidth, PAD)));
-          } else if(bb.maxX >= vbWidth - 0.5){
-            node.appendChild(haloEllipseEl(fitEdgeEllipse(bb, vbWidth, vbWidth, PAD)));
-          } else {
-            node.appendChild(haloEllipseEl(fitEllipse(bb, PAD)));
-          }
+          var hull = convexHull(cluster);
+          node.appendChild(haloPolygonEl(inflateHull(hull, PAD, MIN_RADIUS)));
         });
       }
       /* Cap the span used for the detail trigger. A few small
