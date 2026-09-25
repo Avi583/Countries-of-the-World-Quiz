@@ -80,6 +80,26 @@ svg.dragging{cursor:grabbing}
    stay legible against the ocean at world zoom, where their footprint
    is only a few pixels across. */
 .sm .dot{stroke-width:1}
+/* Dotted halo ring around each small island country's dot, so states
+   like the Maldives are easy to spot at world zoom. It fades out once
+   the real coastline (.hd) takes over, and fills with a diagonal grey
+   hatch once the country is found, so you can see it's answered while
+   the dot/shape underneath stays visible. */
+.sm .halo{
+  fill:none;
+  stroke:var(--brass);
+  stroke-width:1;
+  stroke-dasharray:1.2 1.8;
+  stroke-linecap:round;
+  opacity:.6;
+  vector-effect:non-scaling-stroke;
+  pointer-events:none;
+  transition:opacity .3s ease,stroke .3s ease;
+}
+.sm.detail>.halo{opacity:0}
+.sm.found>.halo{stroke:var(--found);fill:url(#halo-stripes);opacity:.9}
+.sm.missed>.halo{stroke:var(--miss);opacity:.6}
+.halo-stripe-line{stroke:var(--found);stroke-width:1.6}
 .c.found,.sm.found>*{fill:var(--found);stroke:var(--ocean)}
 .c.missed,.sm.missed>*{fill:var(--miss);stroke:#5E343B}
 .sm>.hd{opacity:0;pointer-events:none}

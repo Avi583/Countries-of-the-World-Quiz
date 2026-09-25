@@ -3,6 +3,9 @@
 var SVGNS = "http://www.w3.org/2000/svg";
 var DETAIL_AT = 4;      /* map units of on-screen span before a dot becomes a shape */
 var DOT_R = 4.5;
+var HALO_R = DOT_R * 1.8; /* dotted ring drawn around each small country's dot, so tiny
+                              island states (Maldives, etc.) are easier to spot at world
+                              zoom; hidden once the real coastline (.hd) takes over */
 
 Promise.all([
   fetch("countries.json").then(function(r){ return r.json(); }),
@@ -29,6 +32,12 @@ var svg = document.createElementNS(SVGNS,"svg");
 svg.setAttribute("viewBox", DATA.viewBox);
 svg.setAttribute("role","img");
 svg.setAttribute("aria-label","World map. Countries you have named are filled in light grey.");
+var defs = document.createElementNS(SVGNS,"defs");
+defs.innerHTML =
+  '<pattern id="halo-stripes" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">' +
+    '<line class="halo-stripe-line" x1="0" y1="0" x2="0" y2="4"></line>' +
+  '</pattern>';
+svg.appendChild(defs);
 var world = document.createElementNS(SVGNS,"g");
 svg.appendChild(world);
 
@@ -75,6 +84,11 @@ DATA.countries.forEach(function(c){
   } else {
     node = document.createElementNS(SVGNS,"g");
     node.setAttribute("class","sm");
+    var halo = document.createElementNS(SVGNS,"circle");
+    halo.setAttribute("class","halo");
+    halo.setAttribute("cx", c.p[0]); halo.setAttribute("cy", c.p[1]);
+    halo.setAttribute("r", HALO_R);
+    node.appendChild(halo);
     var dot = document.createElementNS(SVGNS,"circle");
     dot.setAttribute("class","dot");
     dot.setAttribute("cx", c.p[0]); dot.setAttribute("cy", c.p[1]);
@@ -92,9 +106,9 @@ DATA.countries.forEach(function(c){
          big on screen — using it uncapped meant they never showed as
          a dot at all, even fully zoomed out. Capping keeps the
          dot->shape swap tied to real on-screen size instead. */
-      lookup.small.push({node:node, dot:dot, span:Math.min(c.f[2], 2)});
+      lookup.small.push({node:node, dot:dot, halo:halo, span:Math.min(c.f[2], 2)});
     } else {
-      lookup.small.push({node:node, dot:dot, span:0});    /* Vatican City stays a dot */
+      lookup.small.push({node:node, dot:dot, halo:halo, span:0});    /* Vatican City stays a dot */
     }
     smallNodes.push(node);
   }
@@ -291,9 +305,11 @@ var reduced = mq("(prefers-reduced-motion: reduce)");
 function applyViewport(){
   world.setAttribute("transform","translate("+viewport.tx+","+viewport.ty+") scale("+viewport.k+")");
   var r = DOT_R / viewport.k;
+  var hr = HALO_R / viewport.k;
   for(var i=0;i<lookup.small.length;i++){
     var s = lookup.small[i];
     s.dot.setAttribute("r", r);
+    s.halo.setAttribute("r", hr);
     var wantDetail = s.span * viewport.k >= DETAIL_AT;
     if(wantDetail !== s.shown){ s.node.classList.toggle("detail", wantDetail); s.shown = wantDetail; }
   }

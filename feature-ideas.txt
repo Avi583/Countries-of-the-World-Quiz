@@ -77,13 +77,6 @@ HARD
     etc.) — this app is currently 100% static/client-side with no
     server, so this is a different project shape, not just new code.
 
-14. Continent-select mode: play just Africa, just Europe, etc., with
-    the map cropped/zoomed to that region and scoring scoped to it.
-    Why hard: countries.json has no continent-crop viewBox or
-    initial-frame data per region, so you'd need new data (a bounding
-    box per continent) plus changes to frameForCountry/viewport reset
-    logic and the win condition in Game.guess (currently "===
-    state.core", a single global number).
 
 15. Editable/import custom country lists (e.g. "US states" or
     "world capitals") as a totally different quiz built on the same
