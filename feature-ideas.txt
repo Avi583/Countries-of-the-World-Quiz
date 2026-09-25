@@ -18,7 +18,7 @@ EASY
    game early, since it's currently a single accidental click away.
    Why easy: wrap the existing "giveup" click handler.
 
-5. "Copy results" button that puts a text summary (time, score,
+3. "Copy results" button that puts a text summary (time, score,
    missed count) on the clipboard for sharing.
    Why easy: navigator.clipboard.writeText with a string built from
    values you already have in finish().
