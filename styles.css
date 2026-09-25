@@ -96,14 +96,15 @@ svg.dragging{cursor:grabbing}
   pointer-events:none;
   transition:opacity .3s ease,stroke .3s ease;
 }
-.sm.detail>.halo{opacity:0}
+.sm.detail:not(.blob)>.halo{opacity:0}
 .sm.found>.halo{stroke:var(--found);fill:url(#halo-stripes);opacity:.9}
 .sm.missed>.halo{stroke:var(--miss);opacity:.6}
 .halo-stripe-line{stroke:var(--found);stroke-width:1.6}
-/* Detail-view halo: an ellipse fit to the real bounding box of every
-   island in the country (see boundsFromPath in app.js), so a spread-
-   out archipelago like the Maldives gets a ring that actually encloses
-   all of it rather than a small circle around one point. */
+/* Detail-view halo: one or two ellipses fit to the real, corner-safe
+   bounding box of a country's islands (see app.js), so a spread-out
+   archipelago like the Maldives or Seychelles gets a ring that truly
+   encloses all of it — never used for single-landmass ".blob"
+   countries, which just keep the plain dot halo above. */
 .sm .halo-detail{
   fill:none;
   stroke:var(--brass);

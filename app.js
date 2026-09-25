@@ -26,19 +26,52 @@ Promise.all([
 function init(DATA){
 
 /* Every small-country "hd" outline in this dataset is built from plain
-   M/L/Z commands (no curves), so its bounding box is just the min/max
-   of every coordinate pair in the string — including every separate
-   island subpath, which is exactly what an archipelago's halo needs
-   to enclose (see Maldives: one country, many M...Z island loops). */
-function boundsFromPath(d){
+   M/L/Z commands (no curves), so every coordinate pair in the string
+   can just be read off with a regex — no path parsing needed. */
+function ptsFromPath(d){
   var nums = d.match(/-?\d+(?:\.\d+)?/g);
+  var pts = [];
+  for(var i=0; i<nums.length; i+=2) pts.push([+nums[i], +nums[i+1]]);
+  return pts;
+}
+function boundsOf(pts){
   var minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
-  for(var i=0; i<nums.length; i+=2){
-    var x = +nums[i], y = +nums[i+1];
+  for(var i=0; i<pts.length; i++){
+    var x=pts[i][0], y=pts[i][1];
     if(x<minX) minX=x; if(x>maxX) maxX=x;
     if(y<minY) minY=y; if(y>maxY) maxY=y;
   }
   return {minX:minX, maxX:maxX, minY:minY, maxY:maxY};
+}
+var SQRT2 = Math.SQRT2;
+/* An ellipse that's merely "fit" to a bounding box (same half-width/
+   half-height as radii) misses that box's corners — any island out
+   near a corner (Seychelles has several) ends up outside the ring.
+   Scaling both radii by sqrt(2) is the smallest ellipse, at that
+   aspect ratio, guaranteed to still contain every corner. */
+function fitEllipse(bb, pad){
+  var halfW=(bb.maxX-bb.minX)/2, halfH=(bb.maxY-bb.minY)/2;
+  return {
+    cx:(bb.minX+bb.maxX)/2, cy:(bb.minY+bb.maxY)/2,
+    rx:halfW*SQRT2+pad, ry:halfH*SQRT2+pad
+  };
+}
+/* Same corner-safe math, but pinned flat against a map edge (x=0 or
+   x=vbWidth) instead of centred on the cluster — used for a country
+   split across the antimeridian, so each half gets a semicircle that
+   "breaks" at the edge of the world instead of one huge ellipse
+   stretching across the whole map (see Kiribati). */
+function fitEdgeEllipse(bb, edgeX, vbWidth, pad){
+  var halfH=(bb.maxY-bb.minY)/2;
+  var reach = edgeX===0 ? bb.maxX : (vbWidth-bb.minX);
+  return {cx:edgeX, cy:(bb.minY+bb.maxY)/2, rx:reach*SQRT2+pad, ry:halfH*SQRT2+pad};
+}
+function haloEllipseEl(e){
+  var el = document.createElementNS(SVGNS,"ellipse");
+  el.setAttribute("class","halo-detail");
+  el.setAttribute("cx", e.cx); el.setAttribute("cy", e.cy);
+  el.setAttribute("rx", e.rx); el.setAttribute("ry", e.ry);
+  return el;
 }
 
 /* ================================================================
@@ -47,6 +80,7 @@ function boundsFromPath(d){
 var svg = document.createElementNS(SVGNS,"svg");
 svg.setAttribute("viewBox", DATA.viewBox);
 svg.setAttribute("role","img");
+var vbWidth = +DATA.viewBox.split(" ")[2];
 svg.setAttribute("aria-label","World map. Countries you have named are filled in light grey.");
 var defs = document.createElementNS(SVGNS,"defs");
 defs.innerHTML =
@@ -115,25 +149,36 @@ DATA.countries.forEach(function(c){
       shape.setAttribute("class","hd");
       shape.setAttribute("d", c.hd);
       node.appendChild(shape);
-      /* The world-zoom halo above is a fixed-size ring around the dot —
-         good for catching the eye, but too small/round to enclose a
-         spread-out archipelago. Once zoomed in past DETAIL_AT (the same
-         point the dot swaps for the real coastline), swap to an ellipse
-         fit to the hd path's actual bounding box instead, padded a bit
-         so every island — Malé, the outer atolls, all of them — sits
-         inside the ring. This one is sized in real map units, not
-         compensated for zoom, so it scales naturally with the coastline
-         it's wrapping. */
-      var bb = boundsFromPath(c.hd);
-      var padX = (bb.maxX - bb.minX) * 0.12 + 0.35;
-      var padY = (bb.maxY - bb.minY) * 0.12 + 0.35;
-      var haloDetail = document.createElementNS(SVGNS,"ellipse");
-      haloDetail.setAttribute("class","halo-detail");
-      haloDetail.setAttribute("cx", (bb.minX + bb.maxX) / 2);
-      haloDetail.setAttribute("cy", (bb.minY + bb.maxY) / 2);
-      haloDetail.setAttribute("rx", (bb.maxX - bb.minX) / 2 + padX);
-      haloDetail.setAttribute("ry", (bb.maxY - bb.minY) / 2 + padY);
-      node.appendChild(haloDetail);
+      var subpaths = (c.hd.match(/M/g)||[]).length;
+      if(subpaths <= 1){
+        /* A single landmass (Monaco, Vatican-style microstates, a lone
+           island like Barbados or Singapore) doesn't need a fitted
+           ring — the plain dot halo already covers it, so just keep
+           that visible instead of swapping to a detail ellipse. */
+        node.classList.add("blob");
+      } else {
+        var PAD = 0.35;
+        var pts = ptsFromPath(c.hd).sort(function(a,b){ return a[0]-b[0]; });
+        var gapAt = -1, gapSize = 0;
+        for(var gi=1; gi<pts.length; gi++){
+          var g = pts[gi][0] - pts[gi-1][0];
+          if(g > gapSize){ gapSize = g; gapAt = gi; }
+        }
+        if(gapSize > vbWidth/4){
+          /* The outline jumps clean across most of the map — this
+             country (only Kiribati, currently) is cut by the
+             antimeridian and drawn as two separate clusters near the
+             map's left and right edges. Give each cluster its own
+             edge-pinned half-ellipse instead of one ellipse spanning
+             the whole globe. */
+          var west = boundsOf(pts.slice(0, gapAt));
+          var east = boundsOf(pts.slice(gapAt));
+          node.appendChild(haloEllipseEl(fitEdgeEllipse(west, 0, vbWidth, PAD)));
+          node.appendChild(haloEllipseEl(fitEdgeEllipse(east, vbWidth, vbWidth, PAD)));
+        } else {
+          node.appendChild(haloEllipseEl(fitEllipse(boundsOf(pts), PAD)));
+        }
+      }
       /* Cap the span used for the detail trigger. A few small
          countries (Maldives, Tonga, Cape Verde, ...) are made up of
          islands scattered across a wide bounding box, so their raw
