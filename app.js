@@ -186,9 +186,9 @@ DATA.countries.forEach(function(c){
          big on screen — using it uncapped meant they never showed as
          a dot at all, even fully zoomed out. Capping keeps the
          dot->shape swap tied to real on-screen size instead. */
-      lookup.small.push({node:node, dot:dot, halo:halo, span:Math.min(c.f[2], 2)});
+      lookup.small.push({node:node, dot:dot, halo:halo, span:Math.min(c.f[2], 2), p:c.p});
     } else {
-      lookup.small.push({node:node, dot:dot, halo:halo, span:0});    /* Vatican City stays a dot */
+      lookup.small.push({node:node, dot:dot, halo:halo, span:0, p:c.p});    /* Vatican City stays a dot */
     }
     smallNodes.push(node);
   }
@@ -198,6 +198,36 @@ DATA.countries.forEach(function(c){
   lookup.byId[c.i] = c;
   regionById[c.i] = c.r;
 });
+/* Cap each small country's dotted halo at half the distance to its
+   nearest small-country neighbour, so two halos can never overlap —
+   it's fine for the solid dots themselves to touch/overlap in a
+   tight cluster (e.g. the eastern Caribbean), but the dashed rings
+   should never visibly collide. Falls back to the flat HALO_R for
+   any country with no close neighbour. Done once, O(n^2) over ~29
+   small countries, negligible. */
+(function(){
+  /* Half the distance to the true nearest neighbour, per country, is
+     enough to guarantee no two halos ever touch: if A's nearest
+     neighbour is at distance dA and B's is at distance dB, then for
+     any pair (A,B), dA <= dist(A,B) and dB <= dist(A,B) by definition
+     of "nearest" — so radius(A)+radius(B) <= dA/2 + dB/2 - 2*MARGIN
+     <= dist(A,B) - 2*MARGIN, which is always < dist(A,B). Dots
+     themselves are allowed to overlap (that's fine, and self-resolves
+     on zoom); only the dashed rings are being kept clear of each
+     other here. */
+  var MARGIN = 0.6; /* small gap so rings don't render edge-to-edge */
+  for(var i=0;i<lookup.small.length;i++){
+    var a = lookup.small[i], nearest = Infinity;
+    for(var j=0;j<lookup.small.length;j++){
+      if(i === j) continue;
+      var b = lookup.small[j];
+      var d = Math.hypot(a.p[0]-b.p[0], a.p[1]-b.p[1]);
+      if(d < nearest) nearest = d;
+    }
+    a.maxHaloR = Math.max(0, Math.min(HALO_R, nearest/2 - MARGIN));
+  }
+})();
+
 /* Append every full-outline country first, then every dot-based
    micro-state on top. Countries.json is in alphabetical order, so
    without this split a small country whose name sorts before its
@@ -385,11 +415,10 @@ var reduced = mq("(prefers-reduced-motion: reduce)");
 function applyViewport(){
   world.setAttribute("transform","translate("+viewport.tx+","+viewport.ty+") scale("+viewport.k+")");
   var r = DOT_R / viewport.k;
-  var hr = HALO_R / viewport.k;
   for(var i=0;i<lookup.small.length;i++){
     var s = lookup.small[i];
     s.dot.setAttribute("r", r);
-    s.halo.setAttribute("r", hr);
+    s.halo.setAttribute("r", s.maxHaloR / viewport.k);
     var wantDetail = s.span * viewport.k >= DETAIL_AT;
     if(wantDetail !== s.shown){ s.node.classList.toggle("detail", wantDetail); s.shown = wantDetail; }
   }
