@@ -158,26 +158,36 @@ DATA.countries.forEach(function(c){
         node.classList.add("blob");
       } else {
         var PAD = 0.35;
+        /* Gap between neighbouring islands (sorted by x) large enough
+           to mark a break between separate island groups rather than
+           just normal coastline vertex spacing (checked across every
+           small multi-island country: real intra-island gaps stay
+           under ~1 unit; genuine group separations start above 2). */
+        var CLUSTER_GAP = 2;
         var pts = ptsFromPath(c.hd).sort(function(a,b){ return a[0]-b[0]; });
-        var gapAt = -1, gapSize = 0;
+        var clusters = [[pts[0]]];
         for(var gi=1; gi<pts.length; gi++){
-          var g = pts[gi][0] - pts[gi-1][0];
-          if(g > gapSize){ gapSize = g; gapAt = gi; }
+          if(pts[gi][0] - pts[gi-1][0] > CLUSTER_GAP) clusters.push([]);
+          clusters[clusters.length-1].push(pts[gi]);
         }
-        if(gapSize > vbWidth/4){
-          /* The outline jumps clean across most of the map — this
-             country (only Kiribati, currently) is cut by the
-             antimeridian and drawn as two separate clusters near the
-             map's left and right edges. Give each cluster its own
-             edge-pinned half-ellipse instead of one ellipse spanning
-             the whole globe. */
-          var west = boundsOf(pts.slice(0, gapAt));
-          var east = boundsOf(pts.slice(gapAt));
-          node.appendChild(haloEllipseEl(fitEdgeEllipse(west, 0, vbWidth, PAD)));
-          node.appendChild(haloEllipseEl(fitEdgeEllipse(east, vbWidth, vbWidth, PAD)));
-        } else {
-          node.appendChild(haloEllipseEl(fitEllipse(boundsOf(pts), PAD)));
-        }
+        /* Each island group gets its own tight ring instead of one
+           box padded out to cover empty ocean between groups — a
+           sprawling country like Kiribati (Gilbert/Phoenix/Line) was
+           otherwise represented by one ellipse so large it swallowed
+           several unrelated neighbouring countries. A cluster whose
+           bounds run up against a map edge is part of a landmass cut
+           by the antimeridian, so it gets an edge-pinned half-ellipse
+           (see fitEdgeEllipse) instead of a centred one. */
+        clusters.forEach(function(cluster){
+          var bb = boundsOf(cluster);
+          if(bb.minX <= 0.5){
+            node.appendChild(haloEllipseEl(fitEdgeEllipse(bb, 0, vbWidth, PAD)));
+          } else if(bb.maxX >= vbWidth - 0.5){
+            node.appendChild(haloEllipseEl(fitEdgeEllipse(bb, vbWidth, vbWidth, PAD)));
+          } else {
+            node.appendChild(haloEllipseEl(fitEllipse(bb, PAD)));
+          }
+        });
       }
       /* Cap the span used for the detail trigger. A few small
          countries (Maldives, Tonga, Cape Verde, ...) are made up of
