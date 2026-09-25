@@ -18,6 +18,7 @@ var SHELL = [
   "./styles.css",
   "./game.js",
   "./viewport.js",
+  "./geometry.js",
   "./app.js",
   "./countries.json",
   "./territories.json",

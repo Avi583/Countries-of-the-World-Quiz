@@ -25,47 +25,10 @@ Promise.all([
 
 function init(DATA){
 
-/* Every small-country "hd" outline in this dataset is built from plain
-   M/L/Z commands (no curves), so every coordinate pair in the string
-   can just be read off with a regex — no path parsing needed. */
-function ptsFromPath(d){
-  var nums = d.match(/-?\d+(?:\.\d+)?/g);
-  var pts = [];
-  for(var i=0; i<nums.length; i+=2) pts.push([+nums[i], +nums[i+1]]);
-  return pts;
-}
-function boundsOf(pts){
-  var minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
-  for(var i=0; i<pts.length; i++){
-    var x=pts[i][0], y=pts[i][1];
-    if(x<minX) minX=x; if(x>maxX) maxX=x;
-    if(y<minY) minY=y; if(y>maxY) maxY=y;
-  }
-  return {minX:minX, maxX:maxX, minY:minY, maxY:maxY};
-}
-var SQRT2 = Math.SQRT2;
-/* An ellipse that's merely "fit" to a bounding box (same half-width/
-   half-height as radii) misses that box's corners — any island out
-   near a corner (Seychelles has several) ends up outside the ring.
-   Scaling both radii by sqrt(2) is the smallest ellipse, at that
-   aspect ratio, guaranteed to still contain every corner. */
-function fitEllipse(bb, pad){
-  var halfW=(bb.maxX-bb.minX)/2, halfH=(bb.maxY-bb.minY)/2;
-  return {
-    cx:(bb.minX+bb.maxX)/2, cy:(bb.minY+bb.maxY)/2,
-    rx:halfW*SQRT2+pad, ry:halfH*SQRT2+pad
-  };
-}
-/* Same corner-safe math, but pinned flat against a map edge (x=0 or
-   x=vbWidth) instead of centred on the cluster — used for a country
-   split across the antimeridian, so each half gets a semicircle that
-   "breaks" at the edge of the world instead of one huge ellipse
-   stretching across the whole map (see Kiribati). */
-function fitEdgeEllipse(bb, edgeX, vbWidth, pad){
-  var halfH=(bb.maxY-bb.minY)/2;
-  var reach = edgeX===0 ? bb.maxX : (vbWidth-bb.minX);
-  return {cx:edgeX, cy:(bb.minY+bb.maxY)/2, rx:reach*SQRT2+pad, ry:halfH*SQRT2+pad};
-}
+/* ptsFromPath, boundsOf, fitEllipse and fitEdgeEllipse — the pure math
+   behind the halo-fitting below — now live in geometry.js, loaded
+   before this file. haloEllipseEl stays here since it builds a DOM
+   node from that math's output. */
 function haloEllipseEl(e){
   var el = document.createElementNS(SVGNS,"ellipse");
   el.setAttribute("class","halo-detail");
@@ -315,14 +278,23 @@ function renderBest(){
 }
 
 /* ---------- DOM effects for a single country ---------- */
+/* Restarts a CSS animation that's already applied: removing then
+   re-adding a class in the same tick is a no-op as far as the browser
+   is concerned, so the getBoundingClientRect() read in between forces
+   a reflow that "commits" the removal first. */
+function pulse(el){
+  el.classList.remove("pulse");
+  void el.getBoundingClientRect();
+  el.classList.add("pulse");
+}
 function markFound(id){
   var node = lookup.el[id];
   node.classList.add("found");
-  node.classList.remove("pulse"); void node.getBoundingClientRect(); node.classList.add("pulse");
+  pulse(node);
   var owned = territoriesByOwner[id];
   if(owned) owned.forEach(function(t){
     t.classList.add("found");
-    t.classList.remove("pulse"); void t.getBoundingClientRect(); t.classList.add("pulse");
+    pulse(t);
   });
 }
 function markMissed(id){
