@@ -25,6 +25,22 @@ Promise.all([
 
 function init(DATA){
 
+/* Every small-country "hd" outline in this dataset is built from plain
+   M/L/Z commands (no curves), so its bounding box is just the min/max
+   of every coordinate pair in the string — including every separate
+   island subpath, which is exactly what an archipelago's halo needs
+   to enclose (see Maldives: one country, many M...Z island loops). */
+function boundsFromPath(d){
+  var nums = d.match(/-?\d+(?:\.\d+)?/g);
+  var minX=Infinity, maxX=-Infinity, minY=Infinity, maxY=-Infinity;
+  for(var i=0; i<nums.length; i+=2){
+    var x = +nums[i], y = +nums[i+1];
+    if(x<minX) minX=x; if(x>maxX) maxX=x;
+    if(y<minY) minY=y; if(y>maxY) maxY=y;
+  }
+  return {minX:minX, maxX:maxX, minY:minY, maxY:maxY};
+}
+
 /* ================================================================
    DOM: draw the map
    ================================================================ */
@@ -99,6 +115,25 @@ DATA.countries.forEach(function(c){
       shape.setAttribute("class","hd");
       shape.setAttribute("d", c.hd);
       node.appendChild(shape);
+      /* The world-zoom halo above is a fixed-size ring around the dot —
+         good for catching the eye, but too small/round to enclose a
+         spread-out archipelago. Once zoomed in past DETAIL_AT (the same
+         point the dot swaps for the real coastline), swap to an ellipse
+         fit to the hd path's actual bounding box instead, padded a bit
+         so every island — Malé, the outer atolls, all of them — sits
+         inside the ring. This one is sized in real map units, not
+         compensated for zoom, so it scales naturally with the coastline
+         it's wrapping. */
+      var bb = boundsFromPath(c.hd);
+      var padX = (bb.maxX - bb.minX) * 0.12 + 0.35;
+      var padY = (bb.maxY - bb.minY) * 0.12 + 0.35;
+      var haloDetail = document.createElementNS(SVGNS,"ellipse");
+      haloDetail.setAttribute("class","halo-detail");
+      haloDetail.setAttribute("cx", (bb.minX + bb.maxX) / 2);
+      haloDetail.setAttribute("cy", (bb.minY + bb.maxY) / 2);
+      haloDetail.setAttribute("rx", (bb.maxX - bb.minX) / 2 + padX);
+      haloDetail.setAttribute("ry", (bb.maxY - bb.minY) / 2 + padY);
+      node.appendChild(haloDetail);
       /* Cap the span used for the detail trigger. A few small
          countries (Maldives, Tonga, Cape Verde, ...) are made up of
          islands scattered across a wide bounding box, so their raw

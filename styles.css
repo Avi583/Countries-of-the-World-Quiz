@@ -100,6 +100,24 @@ svg.dragging{cursor:grabbing}
 .sm.found>.halo{stroke:var(--found);fill:url(#halo-stripes);opacity:.9}
 .sm.missed>.halo{stroke:var(--miss);opacity:.6}
 .halo-stripe-line{stroke:var(--found);stroke-width:1.6}
+/* Detail-view halo: an ellipse fit to the real bounding box of every
+   island in the country (see boundsFromPath in app.js), so a spread-
+   out archipelago like the Maldives gets a ring that actually encloses
+   all of it rather than a small circle around one point. */
+.sm .halo-detail{
+  fill:none;
+  stroke:var(--brass);
+  stroke-width:1;
+  stroke-dasharray:1.2 1.8;
+  stroke-linecap:round;
+  opacity:0;
+  vector-effect:non-scaling-stroke;
+  pointer-events:none;
+  transition:opacity .3s ease,stroke .3s ease;
+}
+.sm.detail>.halo-detail{opacity:.6}
+.sm.found>.halo-detail{stroke:var(--found);fill:url(#halo-stripes);opacity:.9}
+.sm.missed>.halo-detail{stroke:var(--miss);opacity:.6}
 .c.found,.sm.found>*{fill:var(--found);stroke:var(--ocean)}
 .c.missed,.sm.missed>*{fill:var(--miss);stroke:#5E343B}
 .sm>.hd{opacity:0;pointer-events:none}
