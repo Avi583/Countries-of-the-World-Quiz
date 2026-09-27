@@ -25,9 +25,9 @@ Promise.all([
 
 function init(DATA){
 
-/* ptsFromPath, boundsOf, fitEllipse and fitEdgeEllipse — the pure math
+/* ptsFromPath, boundsOf, convexHull and inflateHull — the pure math
    behind the halo-fitting below — now live in geometry.js, loaded
-   before this file. haloEllipseEl stays here since it builds a DOM
+   before this file. haloPathEl stays here since it builds a DOM
    node from that math's output. */
 /* Builds ONE path element covering every island cluster's inflated
    hull, as separate M..Z subpaths within a single <path> rather than

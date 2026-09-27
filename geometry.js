@@ -4,8 +4,8 @@
    GEOMETRY — pure math, no DOM access. Extracted from app.js so the
    halo-fitting math for small/multi-island countries follows the same
    pure-logic-separate-from-rendering pattern as game.js and
-   viewport.js. app.js's haloEllipseEl() is what turns the {cx,cy,rx,
-   ry} these functions return into an actual SVG element.
+   viewport.js. app.js's haloPathEl() is what turns the hull polygon
+   points these functions return into an actual SVG <path> element.
    ================================================================ */
 
 /* Every small-country "hd" outline in this dataset is built from plain

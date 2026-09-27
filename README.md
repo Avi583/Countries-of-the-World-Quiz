@@ -41,11 +41,11 @@ Around 700 spellings are accepted. Two-letter country codes are not — `fr`, `i
 
 `Congo` alone resolves to the Republic of the Congo; the other one needs `DR Congo`, `DRC`, `Zaire` or `Congo-Kinshasa`. No accepted spelling is ambiguous between two countries — that's checked at build time.
 
-To add a spelling, find the country in the `mapdata` JSON block near the bottom of `index.html` and add your string to its `"a"` array, lowercase and without punctuation.
+To add a spelling, find the country in `countries.json` and add your string to its `"a"` array, lowercase and without punctuation.
 
 ## The data block
 
-Each country in `mapdata` carries:
+Each country in `countries.json` carries:
 
 | key | meaning |
 |---|---|

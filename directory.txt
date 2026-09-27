@@ -6,9 +6,9 @@ index.html
   input, score/clock, Give up / Start over buttons), the map
   container (#mapbox, with the fact-card and zoom controls), the
   region-progress grid, the results panel, and the footer/credits.
-  Loads styles.css, then game.js, viewport.js and app.js in that
-  order. Holds no game data itself — app.js fetches countries.json
-  and territories.json at runtime.
+  Loads styles.css, then game.js, viewport.js, geometry.js and app.js
+  in that order. Holds no game data itself — app.js fetches
+  countries.json and territories.json at runtime.
 
 styles.css
   All visual styling: colour variables, layout for the masthead and
@@ -45,6 +45,24 @@ viewport.js
                          country in a region to get the box, so no
                          separate per-continent data is needed.
   Loaded before app.js, since app.js calls into it.
+
+geometry.js
+  Pure math, no DOM access. Extracted from app.js so the halo-fitting
+  math for small/multi-island countries follows the same
+  pure-logic-separate-from-rendering pattern as game.js and
+  viewport.js. Exposes:
+    ptsFromPath, boundsOf    — read coastline point pairs and their
+                                bounding box straight off an "hd" path
+                                string.
+    convexHull, inflateHull  — fit a convex hull to an island
+                                cluster's points and puff it outward
+                                into the halo ring, instead of fitting
+                                a generic ellipse, so a scattered
+                                archipelago (Kiribati, the Maldives)
+                                gets a ring that actually follows its
+                                shape.
+  Loaded before app.js, since app.js's haloPathEl() turns the hull
+  points these functions return into an SVG <path> element.
 
 app.js
   Everything that touches the DOM. On load it fetches countries.json
