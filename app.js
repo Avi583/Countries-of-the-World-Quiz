@@ -3,7 +3,7 @@
 var SVGNS = "http://www.w3.org/2000/svg";
 var DETAIL_AT = 4;      /* map units of on-screen span before a dot becomes a shape */
 var DOT_R = 4.5;
-var HALO_R = DOT_R * 1.8; /* dotted ring drawn around each small country's dot, so tiny
+var HULL_R = DOT_R * 1.8; /* dotted ring drawn around each small country's dot, so tiny
                               island states (Maldives, etc.) are easier to spot at world
                               zoom; hidden once the real coastline (.hd) takes over */
 
@@ -26,8 +26,8 @@ Promise.all([
 function init(DATA){
 
 /* ptsFromPath, boundsOf, convexHull and inflateHull — the pure math
-   behind the halo-fitting below — now live in geometry.js, loaded
-   before this file. haloPathEl stays here since it builds a DOM
+   behind the hull-fitting below — now live in geometry.js, loaded
+   before this file. hullPathEl stays here since it builds a DOM
    node from that math's output. */
 /* Builds ONE path element covering every island cluster's inflated
    hull, as separate M..Z subpaths within a single <path> rather than
@@ -37,10 +37,10 @@ function init(DATA){
    represented by a single shape big enough to swallow its neighbours
    — but they're now one shape/element/dash pattern instead of several
    independent polygons, so the dotted stroke reads as one continuous
-   halo instead of restarting (and re-animating) at each island. */
-function haloPathEl(loops){
+   hull instead of restarting (and re-animating) at each island. */
+function hullPathEl(loops){
   var el = document.createElementNS(SVGNS,"path");
-  el.setAttribute("class","halo-detail");
+  el.setAttribute("class","hull-detail");
   var d = loops.map(function(pts){
     return "M" + pts.map(function(p){ return p[0]+","+p[1]; }).join("L") + "Z";
   }).join(" ");
@@ -58,8 +58,8 @@ var vbWidth = +DATA.viewBox.split(" ")[2];
 svg.setAttribute("aria-label","World map. Countries you have named are filled in light grey.");
 var defs = document.createElementNS(SVGNS,"defs");
 defs.innerHTML =
-  '<pattern id="halo-stripes" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">' +
-    '<line class="halo-stripe-line" x1="0" y1="0" x2="0" y2="4"></line>' +
+  '<pattern id="hull-stripes" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">' +
+    '<line class="hull-stripe-line" x1="0" y1="0" x2="0" y2="4"></line>' +
   '</pattern>';
 svg.appendChild(defs);
 var world = document.createElementNS(SVGNS,"g");
@@ -108,11 +108,11 @@ DATA.countries.forEach(function(c){
   } else {
     node = document.createElementNS(SVGNS,"g");
     node.setAttribute("class","sm");
-    var halo = document.createElementNS(SVGNS,"circle");
-    halo.setAttribute("class","halo");
-    halo.setAttribute("cx", c.p[0]); halo.setAttribute("cy", c.p[1]);
-    halo.setAttribute("r", HALO_R);
-    node.appendChild(halo);
+    var hull = document.createElementNS(SVGNS,"circle");
+    hull.setAttribute("class","hull");
+    hull.setAttribute("cx", c.p[0]); hull.setAttribute("cy", c.p[1]);
+    hull.setAttribute("r", HULL_R);
+    node.appendChild(hull);
     var dot = document.createElementNS(SVGNS,"circle");
     dot.setAttribute("class","dot");
     dot.setAttribute("cx", c.p[0]); dot.setAttribute("cy", c.p[1]);
@@ -127,7 +127,7 @@ DATA.countries.forEach(function(c){
       if(subpaths <= 1){
         /* A single landmass (Monaco, Vatican-style microstates, a lone
            island like Barbados or Singapore) doesn't need a fitted
-           ring — the plain dot halo already covers it, so just keep
+           ring — the plain dot hull already covers it, so just keep
            that visible instead of swapping to a detail ellipse. */
         node.classList.add("blob");
       } else {
@@ -153,11 +153,11 @@ DATA.countries.forEach(function(c){
            the antimeridian edge, so no separate edge case is needed —
            an inflated hull there just runs up to the map's edge and
            is clipped by the viewBox like anything else. */
-        var haloLoops = clusters.map(function(cluster){
+        var hullLoops = clusters.map(function(cluster){
           var hull = convexHull(cluster);
           return inflateHull(hull, PAD, MIN_RADIUS);
         });
-        node.appendChild(haloPathEl(haloLoops));
+        node.appendChild(hullPathEl(hullLoops));
       }
       /* Cap the span used for the detail trigger. A few small
          countries (Maldives, Tonga, Cape Verde, ...) are made up of
@@ -166,9 +166,9 @@ DATA.countries.forEach(function(c){
          big on screen — using it uncapped meant they never showed as
          a dot at all, even fully zoomed out. Capping keeps the
          dot->shape swap tied to real on-screen size instead. */
-      lookup.small.push({node:node, dot:dot, halo:halo, span:Math.min(c.f[2], 2), p:c.p});
+      lookup.small.push({node:node, dot:dot, hull:hull, span:Math.min(c.f[2], 2), p:c.p});
     } else {
-      lookup.small.push({node:node, dot:dot, halo:halo, span:0, p:c.p});    /* Vatican City stays a dot */
+      lookup.small.push({node:node, dot:dot, hull:hull, span:0, p:c.p});    /* Vatican City stays a dot */
     }
     smallNodes.push(node);
   }
@@ -178,16 +178,16 @@ DATA.countries.forEach(function(c){
   lookup.byId[c.i] = c;
   regionById[c.i] = c.r;
 });
-/* Cap each small country's dotted halo at half the distance to its
-   nearest small-country neighbour, so two halos can never overlap —
+/* Cap each small country's dotted hull at half the distance to its
+   nearest small-country neighbour, so two hulls can never overlap —
    it's fine for the solid dots themselves to touch/overlap in a
    tight cluster (e.g. the eastern Caribbean), but the dashed rings
-   should never visibly collide. Falls back to the flat HALO_R for
+   should never visibly collide. Falls back to the flat HULL_R for
    any country with no close neighbour. Done once, O(n^2) over ~29
    small countries, negligible. */
 (function(){
   /* Half the distance to the true nearest neighbour, per country, is
-     enough to guarantee no two halos ever touch: if A's nearest
+     enough to guarantee no two hulls ever touch: if A's nearest
      neighbour is at distance dA and B's is at distance dB, then for
      any pair (A,B), dA <= dist(A,B) and dB <= dist(A,B) by definition
      of "nearest" — so radius(A)+radius(B) <= dA/2 + dB/2 - 2*MARGIN
@@ -204,7 +204,7 @@ DATA.countries.forEach(function(c){
       var d = Math.hypot(a.p[0]-b.p[0], a.p[1]-b.p[1]);
       if(d < nearest) nearest = d;
     }
-    a.maxHaloR = Math.max(0, Math.min(HALO_R, nearest/2 - MARGIN));
+    a.maxHullR = Math.max(0, Math.min(HULL_R, nearest/2 - MARGIN));
   }
 })();
 
@@ -407,7 +407,7 @@ function applyViewport(){
   for(var i=0;i<lookup.small.length;i++){
     var s = lookup.small[i];
     s.dot.setAttribute("r", r);
-    s.halo.setAttribute("r", s.maxHaloR / viewport.k);
+    s.hull.setAttribute("r", s.maxHullR / viewport.k);
     var wantDetail = s.span * viewport.k >= DETAIL_AT;
     if(wantDetail !== s.shown){ s.node.classList.toggle("detail", wantDetail); s.shown = wantDetail; }
   }

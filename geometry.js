@@ -2,9 +2,9 @@
 
 /* ================================================================
    GEOMETRY — pure math, no DOM access. Extracted from app.js so the
-   halo-fitting math for small/multi-island countries follows the same
+   hull-fitting math for small/multi-island countries follows the same
    pure-logic-separate-from-rendering pattern as game.js and
-   viewport.js. app.js's haloPathEl() is what turns the hull polygon
+   viewport.js. app.js's hullPathEl() is what turns the hull polygon
    points these functions return into an actual SVG <path> element.
    ================================================================ */
 
@@ -27,7 +27,7 @@ function boundsOf(pts){
   return {minX:minX, maxX:maxX, minY:minY, maxY:maxY};
 }
 /* ----------------------------------------------------------------
-   Halo shape: the ring around a small country's islands is meant to
+   Hull shape: the ring around a small country's islands is meant to
    read as "roughly this nation's outline", the way a reference map
    draws a boundary around a scattered island group — not a generic
    oval. So instead of fitting an ellipse to a bounding box, take the

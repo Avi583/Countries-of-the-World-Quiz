@@ -80,12 +80,12 @@ svg.dragging{cursor:grabbing}
    stay legible against the ocean at world zoom, where their footprint
    is only a few pixels across. */
 .sm .dot{stroke-width:1}
-/* Dotted halo ring around each small island country's dot, so states
+/* Dotted hull ring around each small island country's dot, so states
    like the Maldives are easy to spot at world zoom. It fades out once
    the real coastline (.hd) takes over, and fills with a diagonal grey
    hatch once the country is found, so you can see it's answered while
    the dot/shape underneath stays visible. */
-.sm .halo{
+.sm .hull{
   fill:none;
   stroke:var(--brass);
   stroke-width:1;
@@ -96,16 +96,16 @@ svg.dragging{cursor:grabbing}
   pointer-events:none;
   transition:opacity .3s ease,stroke .3s ease;
 }
-.sm.detail:not(.blob)>.halo{opacity:0}
-.sm.found>.halo{stroke:var(--found);fill:url(#halo-stripes);opacity:.9}
-.sm.missed>.halo{stroke:var(--miss);opacity:.6}
-.halo-stripe-line{stroke:var(--found);stroke-width:1.6}
-/* Detail-view halo: one convex-hull-shaped ring per island cluster,
-   fit to the country's real coastline points (see app.js), so a
-   spread-out archipelago like the Maldives or Seychelles gets a ring
-   that truly encloses all of it — never used for single-landmass
-   ".blob" countries, which just keep the plain dot halo above. */
-.sm .halo-detail{
+.sm.detail:not(.blob)>.hull{opacity:0}
+.sm.found>.hull{stroke:var(--found);fill:url(#hull-stripes);opacity:.9}
+.sm.missed>.hull{stroke:var(--miss);opacity:.6}
+.hull-stripe-line{stroke:var(--found);stroke-width:1.6}
+/* Detail-view hull: a polygon ring per island cluster, following the
+   convex hull of the country's real coastline points (see app.js),
+   so a spread-out archipelago like the Maldives or Seychelles gets a
+   ring that truly encloses all of it — never used for single-landmass
+   ".blob" countries, which just keep the plain dot hull above. */
+.sm .hull-detail{
   fill:none;
   stroke:var(--brass);
   stroke-width:1;
@@ -116,9 +116,9 @@ svg.dragging{cursor:grabbing}
   pointer-events:none;
   transition:opacity .3s ease,stroke .3s ease;
 }
-.sm.detail>.halo-detail{opacity:.6}
-.sm.found>.halo-detail{stroke:var(--found);fill:url(#halo-stripes);opacity:.9}
-.sm.missed>.halo-detail{stroke:var(--miss);opacity:.6}
+.sm.detail>.hull-detail{opacity:.6}
+.sm.found>.hull-detail{stroke:var(--found);fill:url(#hull-stripes);opacity:.9}
+.sm.missed>.hull-detail{stroke:var(--miss);opacity:.6}
 .c.found,.sm.found>*{fill:var(--found);stroke:var(--ocean)}
 .c.missed,.sm.missed>*{fill:var(--miss);stroke:#5E343B}
 .sm>.hd{opacity:0;pointer-events:none}

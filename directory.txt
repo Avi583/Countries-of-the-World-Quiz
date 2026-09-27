@@ -47,7 +47,7 @@ viewport.js
   Loaded before app.js, since app.js calls into it.
 
 geometry.js
-  Pure math, no DOM access. Extracted from app.js so the halo-fitting
+  Pure math, no DOM access. Extracted from app.js so the hull-fitting
   math for small/multi-island countries follows the same
   pure-logic-separate-from-rendering pattern as game.js and
   viewport.js. Exposes:
@@ -56,12 +56,12 @@ geometry.js
                                 string.
     convexHull, inflateHull  — fit a convex hull to an island
                                 cluster's points and puff it outward
-                                into the halo ring, instead of fitting
+                                into the hull ring, instead of fitting
                                 a generic ellipse, so a scattered
                                 archipelago (Kiribati, the Maldives)
                                 gets a ring that actually follows its
                                 shape.
-  Loaded before app.js, since app.js's haloPathEl() turns the hull
+  Loaded before app.js, since app.js's hullPathEl() turns the hull
   points these functions return into an SVG <path> element.
 
 app.js
