@@ -29,10 +29,22 @@ function init(DATA){
    behind the halo-fitting below — now live in geometry.js, loaded
    before this file. haloEllipseEl stays here since it builds a DOM
    node from that math's output. */
-function haloPolygonEl(points){
-  var el = document.createElementNS(SVGNS,"polygon");
+/* Builds ONE path element covering every island cluster's inflated
+   hull, as separate M..Z subpaths within a single <path> rather than
+   one <polygon> per cluster. A multi-island country (Kiribati, the
+   Maldives, ...) still gets one ring per cluster — that per-cluster
+   fitting is still what keeps a sprawling country from being
+   represented by a single shape big enough to swallow its neighbours
+   — but they're now one shape/element/dash pattern instead of several
+   independent polygons, so the dotted stroke reads as one continuous
+   halo instead of restarting (and re-animating) at each island. */
+function haloPathEl(loops){
+  var el = document.createElementNS(SVGNS,"path");
   el.setAttribute("class","halo-detail");
-  el.setAttribute("points", points.map(function(p){ return p[0]+","+p[1]; }).join(" "));
+  var d = loops.map(function(pts){
+    return "M" + pts.map(function(p){ return p[0]+","+p[1]; }).join("L") + "Z";
+  }).join(" ");
+  el.setAttribute("d", d);
   return el;
 }
 
@@ -141,10 +153,11 @@ DATA.countries.forEach(function(c){
            the antimeridian edge, so no separate edge case is needed —
            an inflated hull there just runs up to the map's edge and
            is clipped by the viewBox like anything else. */
-        clusters.forEach(function(cluster){
+        var haloLoops = clusters.map(function(cluster){
           var hull = convexHull(cluster);
-          node.appendChild(haloPolygonEl(inflateHull(hull, PAD, MIN_RADIUS)));
+          return inflateHull(hull, PAD, MIN_RADIUS);
         });
+        node.appendChild(haloPathEl(haloLoops));
       }
       /* Cap the span used for the detail trigger. A few small
          countries (Maldives, Tonga, Cape Verde, ...) are made up of
