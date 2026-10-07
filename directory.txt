@@ -92,6 +92,8 @@ countries.json
     r    region, for the tallies
     a    accepted spellings
     d    outline at 110m, for countries big enough to draw
+         (overseas parts such as French Guiana live in
+         territories.json, not in their owner's outline)
     p    dot coordinates, for the 29 small ones
     hd   outline at 10m, shown when you zoom in
     f    [x, y, span] — where to centre and how far to zoom when clicked
@@ -104,10 +106,13 @@ countries.json
 
 territories.json
   { "territories": [ ... ] }
-  The 10 non-answerable areas drawn in a darker tone: Greenland,
-  Western Sahara, Kosovo, Northern Cyprus, Somaliland, Puerto Rico,
-  New Caledonia, the Falklands, the French Southern Territories and
-  Antarctica. Each entry has "d" (outline) and "n" (display name);
+  The 49 non-answerable areas drawn in a darker tone: five unowned
+  or disputed ones (Western Sahara, Kosovo, Northern Cyprus,
+  Somaliland, Antarctica) and 44 dependencies / overseas
+  territories (Greenland, Puerto Rico, the Falklands, French Guiana,
+  Martinique, Guadeloupe, Reunion, Bermuda, Guam, Aruba, French
+  Polynesia, ...). Small island territories get no hulls. Each
+  entry has "d" (outline) and "n" (display name);
   entries that belong to a sovereign country also carry "own" (that
   country's ISO numeric code), so app.js can light the territory up
   alongside its owner when that country is named.

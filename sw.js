@@ -11,7 +11,7 @@
    whenever a shipped file changes so clients pick up the new set
    instead of serving stale assets forever.
    ================================================================ */
-var CACHE_NAME = "name-every-country-v2";
+var CACHE_NAME = "name-every-country-v3";
 var SHELL = [
   "./",
   "./index.html",

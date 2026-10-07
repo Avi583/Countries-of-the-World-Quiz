@@ -17,7 +17,7 @@ A map quiz. Type country names into the box; each one you get right fills in on 
 
 195 answers: the 193 UN member states plus Vatican City and Palestine. Taiwan is accepted and fills in, but it sits outside the 195 and doesn't affect your score.
 
-Territories and disputed areas — Greenland, Western Sahara, Kosovo, Northern Cyprus, Somaliland, Puerto Rico, New Caledonia, the Falklands, the French Southern Territories and Antarctica — are drawn in a darker tone and can't be answered or clicked.
+Territories and disputed areas are drawn in a darker tone and can't be answered or clicked. Five unowned or disputed areas (Western Sahara, Kosovo, Northern Cyprus, Somaliland and Antarctica) stay dark all game. The other 44 are dependencies and overseas territories — Greenland, Puerto Rico, the Falklands, New Caledonia, French Guiana, Martinique, Guadeloupe, Réunion, Mayotte, French Polynesia, Bermuda, the Cayman Islands, Guam, American Samoa, Aruba, the Faroe Islands and more — each tied to its owner, so typing "France" also fills in French Guiana and Réunion, and "United Kingdom" fills in Bermuda and the Falklands. They get no dotted rings, and the smallest are only a speck until you zoom in. Overseas parts live in `territories.json` rather than in their owner's outline in `countries.json`, which is why France's outline is just the mainland and Corsica.
 
 ## Continent mode
 
