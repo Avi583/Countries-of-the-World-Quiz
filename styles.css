@@ -96,7 +96,7 @@ svg.dragging{cursor:grabbing}
   pointer-events:none;
   transition:opacity .3s ease,stroke .3s ease;
 }
-.sm.detail:not(.blob)>.hull{opacity:0}
+svg .sm.detail>.hull{opacity:0}
 .sm.found>.hull{stroke:var(--found);fill:url(#hull-stripes);opacity:.9}
 .sm.missed>.hull{stroke:var(--miss);opacity:.6}
 .hull-stripe-line{stroke:var(--found);stroke-width:1.6}
