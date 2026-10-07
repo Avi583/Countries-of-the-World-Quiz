@@ -7,6 +7,10 @@ var HULL_R = DOT_R * 1.8; /* dotted ring drawn around each small country's dot, 
                               island states (Maldives, etc.) are easier to spot at world
                               zoom; hidden once the real coastline (.hd) takes over */
 
+/* Micro-states that sit on a continent rather than being islands (Andorra,
+   Liechtenstein, Monaco, San Marino, Vatican City) get no dotted hull ring. */
+var LANDLOCKED = {"20":1, "438":1, "492":1, "674":1, "336":1};
+
 Promise.all([
   fetch("countries.json").then(function(r){ return r.json(); }),
   fetch("territories.json").then(function(r){ return r.json(); })
@@ -108,6 +112,7 @@ DATA.countries.forEach(function(c){
   } else {
     node = document.createElementNS(SVGNS,"g");
     node.setAttribute("class","sm");
+    if(LANDLOCKED[c.i]) node.classList.add("nohull");
     var hull = document.createElementNS(SVGNS,"circle");
     hull.setAttribute("class","hull");
     hull.setAttribute("cx", c.p[0]); hull.setAttribute("cy", c.p[1]);
