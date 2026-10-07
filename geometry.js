@@ -101,3 +101,53 @@ function inflateHull(hull, pad, minRadius){
     return [cx+ux*nd, cy+uy*nd];
   });
 }
+
+/* ----------------------------------------------------------------
+   Gap measurement, used to keep neighbouring countries' rings apart.
+   A "hull" here is any point list from convexHull() (1 point, 2
+   points, or a polygon); a country is a list of such hulls.
+   ---------------------------------------------------------------- */
+
+/* Distance from point p to the segment a-b (a may equal b). */
+function distPointSeg(p, a, b){
+  var dx=b[0]-a[0], dy=b[1]-a[1], l2=dx*dx+dy*dy;
+  var t = l2 ? ((p[0]-a[0])*dx + (p[1]-a[1])*dy) / l2 : 0;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(p[0]-(a[0]+t*dx), p[1]-(a[1]+t*dy));
+}
+/* Smallest vertex-to-edge distance between two hulls. Hulls that merely
+   overlap without any vertex near the other's edge aren't detected, but
+   hulls of separate island groups don't nest in this dataset. */
+function hullDistance(h1, h2){
+  function edges(h){
+    if(h.length === 1) return [[h[0], h[0]]];
+    var out = [];
+    for(var i=0;i<h.length;i++){
+      if(h.length === 2 && i === 1) break;
+      out.push([h[i], h[(i+1)%h.length]]);
+    }
+    return out;
+  }
+  var best = Infinity;
+  [[h1,h2],[h2,h1]].forEach(function(pair){
+    var es = edges(pair[1]);
+    pair[0].forEach(function(p){
+      es.forEach(function(e){
+        var d = distPointSeg(p, e[0], e[1]);
+        if(d < best) best = d;
+      });
+    });
+  });
+  return best;
+}
+/* Smallest gap between any hull of country A and any hull of country B. */
+function countryGap(hullsA, hullsB){
+  var best = Infinity;
+  hullsA.forEach(function(a){
+    hullsB.forEach(function(b){
+      var d = hullDistance(a, b);
+      if(d < best) best = d;
+    });
+  });
+  return best;
+}

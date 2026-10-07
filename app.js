@@ -158,11 +158,11 @@ DATA.countries.forEach(function(c){
            the antimeridian edge, so no separate edge case is needed —
            an inflated hull there just runs up to the map's edge and
            is clipped by the viewBox like anything else. */
-        var hullLoops = clusters.map(function(cluster){
-          var hull = convexHull(cluster);
-          return inflateHull(hull, PAD, MIN_RADIUS);
-        });
-        node.appendChild(hullPathEl(hullLoops));
+        /* The ring itself is built after every small country exists
+           (see the "detail hull" pass below), because how far it may
+           be puffed outward depends on how close the neighbouring
+           countries' coastlines are. */
+        node._clusters = clusters;
       }
       /* Cap the span used for the detail trigger. A few small
          countries (Maldives, Tonga, Cape Verde, ...) are made up of
@@ -220,6 +220,44 @@ DATA.countries.forEach(function(c){
    have its dot painted first and then buried under that neighbour's
    110m landmass outline, making it invisible even though its data
    (and its zoomed-in "hd" shape) is perfectly fine. */
+/* Detail hull pass. Each multi-island country's zoomed-in ring is its
+   islands' convex hull puffed outward by up to DETAIL_PAD map units.
+   A fixed 1.0-unit puff is far bigger than the gap between some
+   neighbours (St Vincent and the Grenadines' southern islands sit
+   ~0.17 units from Grenada's Carriacou), so rings overlapped. Here the
+   puff is capped at half the gap to the nearest other small country's
+   coastline hull, minus a margin — the same "half the distance to the
+   nearest neighbour" rule the dot hulls above use — so two rings can
+   never meet. Countries with no close neighbour keep the full puff. */
+(function(){
+  var DETAIL_PAD = 1.0, DETAIL_MIN_RADIUS = 1.0, GAP_MARGIN = 0.02;
+  var entries = [];
+  DATA.countries.forEach(function(c){
+    if(c.d || !c.hd) return;
+    var node = lookup.el[c.i];
+    var clusters = node._clusters || [ptsFromPath(c.hd)];
+    entries.push({
+      node: node,
+      multi: !!node._clusters,
+      hulls: clusters.map(function(cl){ return convexHull(cl); })
+    });
+  });
+  entries.forEach(function(a){
+    if(!a.multi) return;
+    var nearest = Infinity;
+    entries.forEach(function(b){
+      if(b === a) return;
+      var g = countryGap(a.hulls, b.hulls);
+      if(g < nearest) nearest = g;
+    });
+    var cap = Math.max(0, nearest/2 - GAP_MARGIN);
+    var pad = Math.min(DETAIL_PAD, cap), floor = Math.min(DETAIL_MIN_RADIUS, cap);
+    a.node.appendChild(hullPathEl(a.hulls.map(function(h){
+      return inflateHull(h, pad, floor);
+    })));
+  });
+})();
+
 bigNodes.forEach(function(node){ world.appendChild(node); });
 smallNodes.forEach(function(node){ world.appendChild(node); });
 document.getElementById("mapbox").appendChild(svg);
